@@ -1,0 +1,87 @@
+@page
+@model FlyJusticeLite.Pages.Claims.SubmitModel
+@{
+    ViewData["Title"] = "Submit Claim";
+    ViewData["MetaDescription"] = "Submit passenger, flight, and ticket details for a FlyJustice Lite compensation claim.";
+}
+
+<section class="container narrow stack-lg">
+    <div class="page-heading">
+        <p class="eyebrow">New claim</p>
+        <h1>Submit passenger and flight details.</h1>
+        <p>Upload a ticket or booking document so the claim team can review the case.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="form-panel stack-md" data-loading-form>
+        <partial name="_ValidationSummary" />
+
+        <section class="form-section" aria-labelledby="passenger-heading">
+            <h2 id="passenger-heading">Passenger</h2>
+            <div class="form-grid">
+                <div class="field">
+                    <label asp-for="Input.FullName"></label>
+                    <input asp-for="Input.FullName" autocomplete="name" />
+                    <span asp-validation-for="Input.FullName"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" autocomplete="email" />
+                    <span asp-validation-for="Input.Email"></span>
+                </div>
+                <div class="field full">
+                    <label asp-for="Input.Phone"></label>
+                    <input asp-for="Input.Phone" autocomplete="tel" />
+                    <span asp-validation-for="Input.Phone"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-section" aria-labelledby="flight-heading">
+            <h2 id="flight-heading">Flight Details</h2>
+            <div class="form-grid">
+                <div class="field">
+                    <label asp-for="Input.FlightNumber"></label>
+                    <input asp-for="Input.FlightNumber" autocomplete="off" />
+                    <span asp-validation-for="Input.FlightNumber"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.Airline"></label>
+                    <input asp-for="Input.Airline" autocomplete="organization" />
+                    <span asp-validation-for="Input.Airline"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.DepartureAirport"></label>
+                    <input asp-for="Input.DepartureAirport" />
+                    <span asp-validation-for="Input.DepartureAirport"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.ArrivalAirport"></label>
+                    <input asp-for="Input.ArrivalAirport" />
+                    <span asp-validation-for="Input.ArrivalAirport"></span>
+                </div>
+                <div class="field full">
+                    <label asp-for="Input.DelayMinutes"></label>
+                    <input asp-for="Input.DelayMinutes" inputmode="numeric" min="0" max="1440" />
+                    <span asp-validation-for="Input.DelayMinutes"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-section" aria-labelledby="document-heading">
+            <h2 id="document-heading">Document</h2>
+            <div class="field">
+                <label asp-for="Input.TicketUpload"></label>
+                <input asp-for="Input.TicketUpload" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+                <span class="field-hint">PDF, JPG, or PNG. Maximum 10 MB.</span>
+                <span asp-validation-for="Input.TicketUpload"></span>
+            </div>
+        </section>
+
+        <div class="form-actions">
+            <a class="button button-secondary" asp-page="/Index">Back</a>
+            <button class="button button-primary" type="submit" data-submit-button data-loading-text="Submitting...">
+                Submit Claim
+            </button>
+        </div>
+    </form>
+</section>

@@ -1,0 +1,65 @@
+@page
+@model FlyJusticeLite.Pages.Claims.TrackModel
+@{
+    ViewData["Title"] = "Track Claim";
+    ViewData["MetaDescription"] = "Track a FlyJustice Lite flight compensation claim by claim number.";
+}
+
+<section class="container narrow stack-lg">
+    <div class="page-heading">
+        <p class="eyebrow">Claim tracking</p>
+        <h1>Find a claim by claim number.</h1>
+        <p>Use the claim number provided after submission to check the latest status.</p>
+    </div>
+
+    <form method="post" class="search-panel" data-loading-form>
+        <div class="field search-field">
+            <label asp-for="ClaimNumber"></label>
+            <input asp-for="ClaimNumber" placeholder="FJL-20260615-1001" autocomplete="off" />
+            <span asp-validation-for="ClaimNumber"></span>
+        </div>
+        <button class="button button-primary" type="submit" data-submit-button data-loading-text="Searching...">
+            Search
+        </button>
+    </form>
+
+    @if (Model.Searched && Model.Claim is null)
+    {
+        <section class="empty-state" role="status">
+            <h2>No claim found</h2>
+            <p>Check the claim number and try again.</p>
+        </section>
+    }
+
+    @if (Model.Claim is not null)
+    {
+        <section class="detail-panel">
+            <div class="detail-header">
+                <div>
+                    <p class="eyebrow">Claim number</p>
+                    <h2>@Model.Claim.ClaimNumber</h2>
+                </div>
+                <span class="status-pill @Model.Claim.Status.ToCssClass()">@Model.Claim.Status.ToDisplayName()</span>
+            </div>
+
+            <dl class="detail-grid">
+                <div>
+                    <dt>Compensation Amount</dt>
+                    <dd>€@Model.Claim.CompensationAmount.ToString("0")</dd>
+                </div>
+                <div>
+                    <dt>Submission Date</dt>
+                    <dd>@Model.Claim.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</dd>
+                </div>
+                <div>
+                    <dt>Flight</dt>
+                    <dd>@Model.Claim.FlightNumber</dd>
+                </div>
+                <div>
+                    <dt>Route</dt>
+                    <dd>@Model.Claim.DepartureAirport to @Model.Claim.ArrivalAirport</dd>
+                </div>
+            </dl>
+        </section>
+    }
+</section>

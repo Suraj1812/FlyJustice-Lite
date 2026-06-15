@@ -1,0 +1,103 @@
+@page "{id:int}"
+@model FlyJusticeLite.Pages.Admin.DetailsModel
+@{
+    ViewData["Title"] = "Claim Details";
+}
+
+<section class="container stack-lg">
+    <div class="page-heading split">
+        <div>
+            <p class="eyebrow">Claim details</p>
+            <h1>@Model.Claim?.ClaimNumber</h1>
+            <p>@Model.Claim?.FullName - @Model.Claim?.FlightNumber</p>
+        </div>
+        <a class="button button-secondary" asp-page="/Admin/Index">Back to claims</a>
+    </div>
+
+    @if (Model.Claim is not null)
+    {
+        <div class="admin-detail-grid">
+            <section class="detail-panel">
+                <div class="detail-header">
+                    <div>
+                        <p class="eyebrow">Current status</p>
+                        <h2>@Model.Claim.Status.ToDisplayName()</h2>
+                    </div>
+                    <span class="status-pill @Model.Claim.Status.ToCssClass()">@Model.Claim.Status.ToDisplayName()</span>
+                </div>
+
+                <dl class="detail-grid">
+                    <div>
+                        <dt>Passenger</dt>
+                        <dd>@Model.Claim.FullName</dd>
+                    </div>
+                    <div>
+                        <dt>Email</dt>
+                        <dd><a href="mailto:@Model.Claim.Email">@Model.Claim.Email</a></dd>
+                    </div>
+                    <div>
+                        <dt>Phone</dt>
+                        <dd><a href="tel:@Model.Claim.Phone">@Model.Claim.Phone</a></dd>
+                    </div>
+                    <div>
+                        <dt>Flight</dt>
+                        <dd>@Model.Claim.FlightNumber - @Model.Claim.Airline</dd>
+                    </div>
+                    <div>
+                        <dt>Route</dt>
+                        <dd>@Model.Claim.DepartureAirport to @Model.Claim.ArrivalAirport</dd>
+                    </div>
+                    <div>
+                        <dt>Delay</dt>
+                        <dd>@Model.Claim.DelayMinutes minutes</dd>
+                    </div>
+                    <div>
+                        <dt>Compensation</dt>
+                        <dd>€@Model.Claim.CompensationAmount.ToString("0")</dd>
+                    </div>
+                    <div>
+                        <dt>Submitted</dt>
+                        <dd>@Model.Claim.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <aside class="side-panel stack-md">
+                <form method="post" asp-page-handler="Status" asp-route-id="@Model.Claim.Id" class="stack-sm" data-loading-form>
+                    <div class="field">
+                        <label asp-for="Status"></label>
+                        <select asp-for="Status" asp-items="Model.StatusOptions"></select>
+                        <span asp-validation-for="Status"></span>
+                    </div>
+                    <button class="button button-primary button-wide" type="submit" data-submit-button data-loading-text="Updating...">
+                        Update status
+                    </button>
+                </form>
+
+                <section class="documents-list" aria-labelledby="documents-heading">
+                    <h2 id="documents-heading">Documents</h2>
+                    @if (Model.Claim.Documents.Count == 0)
+                    {
+                        <p class="muted">No uploaded documents.</p>
+                    }
+                    else
+                    {
+                        <ul>
+                        @foreach (var document in Model.Claim.Documents.OrderByDescending(item => item.UploadedAt))
+                        {
+                            <li>
+                                <a href="@document.FilePath" target="_blank" rel="noopener">@document.FileName</a>
+                                <span>@document.UploadedAt.ToLocalTime().ToString("dd MMM yyyy")</span>
+                            </li>
+                        }
+                        </ul>
+                    }
+                </section>
+
+                <form method="post" asp-page-handler="Delete" asp-route-id="@Model.Claim.Id" data-confirm="Delete this claim and its documents?">
+                    <button class="button button-danger button-wide" type="submit">Delete claim</button>
+                </form>
+            </aside>
+        </div>
+    }
+</section>

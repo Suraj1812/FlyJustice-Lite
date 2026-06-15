@@ -1,0 +1,35 @@
+@page
+@model FlyJusticeLite.Pages.Admin.LoginModel
+@{
+    ViewData["Title"] = "Admin Login";
+    ViewData["MetaDescription"] = "Sign in to manage FlyJustice Lite flight delay compensation claims.";
+}
+
+<section class="container auth-shell">
+    <div class="page-heading centered">
+        <p class="eyebrow">Admin</p>
+        <h1>Sign in to manage claims.</h1>
+        <p>Use the configured admin credentials for claim review and status updates.</p>
+    </div>
+
+    <form method="post" class="form-panel auth-panel stack-md" data-loading-form>
+        <partial name="_ValidationSummary" />
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        <div class="field">
+            <label asp-for="Input.Username"></label>
+            <input asp-for="Input.Username" autocomplete="username" />
+            <span asp-validation-for="Input.Username"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="Input.Password"></label>
+            <input asp-for="Input.Password" autocomplete="current-password" />
+            <span asp-validation-for="Input.Password"></span>
+        </div>
+
+        <button class="button button-primary button-wide" type="submit" data-submit-button data-loading-text="Signing in...">
+            Sign in
+        </button>
+    </form>
+</section>

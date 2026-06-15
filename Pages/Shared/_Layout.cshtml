@@ -1,0 +1,94 @@
+@using FlyJusticeLite.Options
+@using Microsoft.Extensions.Options
+@inject IOptions<SiteOptions> SiteOptions
+@{
+    var siteName = string.IsNullOrWhiteSpace(SiteOptions.Value.Name) ? "FlyJustice Lite" : SiteOptions.Value.Name;
+    var pageTitle = ViewData["Title"] as string;
+    var fullTitle = string.IsNullOrWhiteSpace(pageTitle) ? siteName : $"{pageTitle} - {siteName}";
+    var description = ViewData["MetaDescription"] as string ?? SiteOptions.Value.MetaDescription;
+    var configuredBaseUrl = SiteOptions.Value.PublicBaseUrl?.TrimEnd('/');
+    var baseUrl = string.IsNullOrWhiteSpace(configuredBaseUrl)
+        ? $"{Context.Request.Scheme}://{Context.Request.Host}"
+        : configuredBaseUrl;
+    var canonicalPath = $"{Context.Request.PathBase}{Context.Request.Path}";
+    var canonicalUrl = $"{baseUrl}{(string.IsNullOrWhiteSpace(canonicalPath) ? "/" : canonicalPath)}";
+    var ogImagePath = Url.Content(ViewData["OgImage"] as string ?? "~/images/og-image.png");
+    var ogImageUrl = ogImagePath.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+        ? ogImagePath
+        : $"{baseUrl}{ogImagePath}";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@fullTitle</title>
+    <meta name="description" content="@description" />
+    <meta name="application-name" content="@siteName" />
+    <meta name="theme-color" content="#073763" />
+    <link rel="canonical" href="@canonicalUrl" />
+    <meta property="og:site_name" content="@siteName" />
+    <meta property="og:title" content="@fullTitle" />
+    <meta property="og:description" content="@description" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="@canonicalUrl" />
+    <meta property="og:image" content="@ogImageUrl" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@fullTitle" />
+    <meta name="twitter:description" content="@description" />
+    <meta name="twitter:image" content="@ogImageUrl" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/images/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/images/apple-touch-icon.png" />
+    <link rel="manifest" href="~/site.webmanifest" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+        <nav class="site-nav container" aria-label="Primary navigation">
+            <a class="brand" asp-page="/Index" aria-label="FlyJustice Lite home">
+                <img src="~/images/flyjustice-logo.png" alt="" width="40" height="40" />
+                <span>FlyJustice Lite</span>
+            </a>
+            <div class="nav-links">
+                <a asp-page="/Claims/Submit">Submit</a>
+                <a asp-page="/Claims/Track">Track</a>
+                <a asp-page="/Admin/Index">Admin</a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <form method="post" asp-page="/Admin/Logout" class="nav-form">
+                        <button type="submit" class="nav-button">Sign out</button>
+                    </form>
+                }
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content" class="main">
+        @RenderBody()
+    </main>
+
+    @if (TempData["Toast.Type"] is string toastType && TempData["Toast.Message"] is string toastMessage)
+    {
+        <div class="toast toast-@toastType" data-toast role="status" aria-live="polite">
+            <span>@toastMessage</span>
+            <button type="button" class="toast-close" data-toast-close aria-label="Dismiss notification">×</button>
+        </div>
+    }
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <span>&copy; @DateTime.UtcNow.Year FlyJustice Lite</span>
+            <span>EU 261 compensation workflows for passenger claims.</span>
+        </div>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

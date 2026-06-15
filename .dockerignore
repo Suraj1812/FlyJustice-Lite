@@ -1,0 +1,11 @@
+.git
+.github
+.vs
+.vscode
+bin
+obj
+wwwroot/uploads/claims/*
+!wwwroot/uploads/claims/.gitkeep
+Dockerfile
+docker-compose.yml
+README.md

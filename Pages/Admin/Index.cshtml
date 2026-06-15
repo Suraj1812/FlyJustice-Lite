@@ -1,0 +1,97 @@
+@page
+@model FlyJusticeLite.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Admin Claims";
+}
+
+<section class="container stack-lg">
+    <div class="page-heading split">
+        <div>
+            <p class="eyebrow">Admin</p>
+            <h1>Claims</h1>
+            <p>Search and manage passenger compensation claims.</p>
+        </div>
+        <a class="button button-secondary" asp-page="/Claims/Submit">New claim</a>
+    </div>
+
+    <form method="get" class="search-panel admin-search">
+        <div class="field search-field">
+            <label asp-for="Search"></label>
+            <input asp-for="Search" placeholder="Name, email, flight number, or claim number" autocomplete="off" />
+        </div>
+        <button class="button button-primary" type="submit">Search</button>
+        @if (!string.IsNullOrWhiteSpace(Model.Search))
+        {
+            <a class="button button-secondary" asp-page="/Admin/Index">Clear</a>
+        }
+    </form>
+
+    @if (Model.Claims.Items.Count == 0)
+    {
+        <section class="empty-state" role="status">
+            <h2>No claims found</h2>
+            <p>Try a different search or submit a sample claim.</p>
+        </section>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="data-table">
+                <caption class="sr-only">Claims list</caption>
+                <thead>
+                    <tr>
+                        <th>Claim</th>
+                        <th>Passenger</th>
+                        <th>Flight</th>
+                        <th>Compensation</th>
+                        <th>Status</th>
+                        <th>Submitted</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var claim in Model.Claims.Items)
+                {
+                    <tr>
+                        <td data-label="Claim">@claim.ClaimNumber</td>
+                        <td data-label="Passenger">
+                            <strong>@claim.FullName</strong>
+                            <span>@claim.Email</span>
+                        </td>
+                        <td data-label="Flight">
+                            <strong>@claim.FlightNumber</strong>
+                            <span>@claim.Airline</span>
+                        </td>
+                        <td data-label="Compensation">€@claim.CompensationAmount.ToString("0")</td>
+                        <td data-label="Status">
+                            <span class="status-pill @claim.Status.ToCssClass()">@claim.Status.ToDisplayName()</span>
+                        </td>
+                        <td data-label="Submitted">@claim.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                        <td class="table-actions">
+                            <a class="button button-small button-secondary" asp-page="/Admin/Details" asp-route-id="@claim.Id">View</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <nav class="pagination" aria-label="Claims pagination">
+            <a class="button button-secondary @(Model.Claims.HasPreviousPage ? "" : "disabled")"
+               asp-page="/Admin/Index"
+               asp-route-search="@Model.Search"
+               asp-route-pageNumber="@(Model.Claims.PageNumber - 1)"
+               aria-disabled="@(!Model.Claims.HasPreviousPage)">
+                Previous
+            </a>
+            <span>Page @Model.Claims.PageNumber of @Model.Claims.TotalPages</span>
+            <a class="button button-secondary @(Model.Claims.HasNextPage ? "" : "disabled")"
+               asp-page="/Admin/Index"
+               asp-route-search="@Model.Search"
+               asp-route-pageNumber="@(Model.Claims.PageNumber + 1)"
+               aria-disabled="@(!Model.Claims.HasNextPage)">
+                Next
+            </a>
+        </nav>
+    }
+</section>

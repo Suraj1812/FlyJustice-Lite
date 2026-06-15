@@ -1,0 +1,92 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Check Eligibility";
+    ViewData["MetaDescription"] = "Check flight delay compensation eligibility and start a FlyJustice Lite claim in minutes.";
+}
+
+<section class="container home-shell">
+    <div class="page-heading centered">
+        <p class="eyebrow">Flight delay compensation</p>
+        <h1>Check a passenger claim in under a minute.</h1>
+        <p>Enter the core flight details to estimate compensation before opening a claim.</p>
+    </div>
+
+    <form method="post" class="form-panel eligibility-panel stack-md" data-loading-form>
+        <partial name="_ValidationSummary" />
+
+        <div class="form-grid">
+            <div class="field">
+                <label asp-for="Input.FlightNumber"></label>
+                <input asp-for="Input.FlightNumber" autocomplete="off" placeholder="BA492" />
+                <span asp-validation-for="Input.FlightNumber"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Input.Airline"></label>
+                <input asp-for="Input.Airline" autocomplete="organization" placeholder="British Airways" />
+                <span asp-validation-for="Input.Airline"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Input.DepartureAirport"></label>
+                <input asp-for="Input.DepartureAirport" placeholder="London Heathrow" />
+                <span asp-validation-for="Input.DepartureAirport"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Input.ArrivalAirport"></label>
+                <input asp-for="Input.ArrivalAirport" placeholder="Gibraltar" />
+                <span asp-validation-for="Input.ArrivalAirport"></span>
+            </div>
+            <div class="field full">
+                <label asp-for="Input.DelayMinutes"></label>
+                <input asp-for="Input.DelayMinutes" inputmode="numeric" min="0" max="1440" placeholder="315" />
+                <span asp-validation-for="Input.DelayMinutes"></span>
+            </div>
+        </div>
+
+        <button class="button button-primary button-wide" type="submit" data-submit-button data-loading-text="Checking...">
+            Check Eligibility
+        </button>
+    </form>
+
+    @if (Model.Result is not null)
+    {
+        <section class="result-panel @(Model.Result.IsEligible ? "result-success" : "result-neutral")" aria-live="polite">
+            <div>
+                <p class="eyebrow">@((Model.Result.IsEligible ? "Eligible estimate" : "Not eligible"))</p>
+                <h2>@(Model.Result.IsEligible ? $"€{Model.Result.CompensationAmount:0}" : "No compensation estimate")</h2>
+                <p>@Model.Result.Message</p>
+            </div>
+
+            @if (Model.Result.IsEligible)
+            {
+                <a class="button button-secondary" asp-page="/Claims/Submit"
+                   asp-route-flightNumber="@Model.Input.FlightNumber"
+                   asp-route-airline="@Model.Input.Airline"
+                   asp-route-departureAirport="@Model.Input.DepartureAirport"
+                   asp-route-arrivalAirport="@Model.Input.ArrivalAirport"
+                   asp-route-delayMinutes="@Model.Input.DelayMinutes">
+                    Continue to claim
+                </a>
+            }
+        </section>
+    }
+
+    <section class="stats-strip" aria-label="Live claim metrics">
+        <div>
+            <span>@Model.Stats.TotalClaims.ToString("N0")</span>
+            <p>claims tracked</p>
+        </div>
+        <div>
+            <span>@Model.Stats.ApprovedClaims.ToString("N0")</span>
+            <p>approved claims</p>
+        </div>
+        <div>
+            <span>€@Model.Stats.PotentialCompensation.ToString("N0")</span>
+            <p>potential compensation</p>
+        </div>
+        <div>
+            <span>@Model.Stats.AverageDelayMinutes.ToString("N0") min</span>
+            <p>average delay</p>
+        </div>
+    </section>
+</section>

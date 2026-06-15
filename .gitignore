@@ -1,0 +1,9 @@
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+wwwroot/uploads/claims/*
+!wwwroot/uploads/claims/.gitkeep
+appsettings.Production.json
