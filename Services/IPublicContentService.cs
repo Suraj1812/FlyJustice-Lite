@@ -10,6 +10,12 @@ public interface IPublicContentService
 
     IReadOnlyList<TrustPoint> GetTrustPoints();
 
+    IReadOnlyList<SupportedAirline> GetSupportedAirlines();
+
+    IReadOnlyList<PassengerStory> GetPassengerStories();
+
+    IReadOnlyList<SuccessStory> GetSuccessStories();
+
     IReadOnlyList<PublicContentPage> GetRightsPages();
 
     PublicContentPage? GetRightsPage(string slug);

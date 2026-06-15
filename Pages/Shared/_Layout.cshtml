@@ -1,10 +1,11 @@
 @using FlyJusticeLite.Options
 @using Microsoft.Extensions.Options
+@using System.Text.Json
 @inject IOptions<SiteOptions> SiteOptions
 @{
     var siteName = string.IsNullOrWhiteSpace(SiteOptions.Value.Name) ? "FlyJustice Lite" : SiteOptions.Value.Name;
     var pageTitle = ViewData["Title"] as string;
-    var fullTitle = string.IsNullOrWhiteSpace(pageTitle) ? siteName : $"{pageTitle} - {siteName}";
+    var fullTitle = string.IsNullOrWhiteSpace(pageTitle) ? siteName : $"{pageTitle} | {siteName}";
     var description = ViewData["MetaDescription"] as string ?? SiteOptions.Value.MetaDescription;
     var configuredBaseUrl = SiteOptions.Value.PublicBaseUrl?.TrimEnd('/');
     var baseUrl = string.IsNullOrWhiteSpace(configuredBaseUrl)
@@ -12,10 +13,24 @@
         : configuredBaseUrl;
     var canonicalPath = $"{Context.Request.PathBase}{Context.Request.Path}";
     var canonicalUrl = $"{baseUrl}{(string.IsNullOrWhiteSpace(canonicalPath) ? "/" : canonicalPath)}";
-    var ogImagePath = Url.Content(ViewData["OgImage"] as string ?? "~/images/og-image.png");
+    var ogImagePath = Url.Content(ViewData["OgImage"] as string ?? "~/images/editorial/airport-hero.jpg");
     var ogImageUrl = ogImagePath.StartsWith("http", StringComparison.OrdinalIgnoreCase)
         ? ogImagePath
         : $"{baseUrl}{ogImagePath}";
+    var isAdmin = Context.Request.Path.StartsWithSegments("/Admin");
+    var bodyClass = ViewData["BodyClass"] as string ?? string.Empty;
+    var preloadImage = ViewData["PreloadImage"] as string;
+    var organizationSchema = JsonSerializer.Serialize(new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "LegalService",
+        ["name"] = siteName,
+        ["url"] = baseUrl,
+        ["logo"] = $"{baseUrl}/images/icon-512x512.png",
+        ["description"] = description,
+        ["areaServed"] = "European Union",
+        ["serviceType"] = "Flight compensation claim support"
+    });
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +40,16 @@
     <title>@fullTitle</title>
     <meta name="description" content="@description" />
     <meta name="application-name" content="@siteName" />
-    <meta name="theme-color" content="#073763" />
+    <meta name="theme-color" content="#082a46" />
+    <meta name="color-scheme" content="light" />
+    @if (isAdmin)
+    {
+        <meta name="robots" content="noindex,nofollow" />
+    }
+    else
+    {
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+    }
     <link rel="canonical" href="@canonicalUrl" />
     <meta property="og:site_name" content="@siteName" />
     <meta property="og:title" content="@fullTitle" />
@@ -33,10 +57,15 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="@canonicalUrl" />
     <meta property="og:image" content="@ogImageUrl" />
+    <meta property="og:image:alt" content="Passenger aircraft at a modern European airport" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="@fullTitle" />
     <meta name="twitter:description" content="@description" />
     <meta name="twitter:image" content="@ogImageUrl" />
+    @if (!string.IsNullOrWhiteSpace(preloadImage))
+    {
+        <link rel="preload" as="image" href="@Url.Content(preloadImage)" fetchpriority="high" />
+    }
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -45,25 +74,47 @@
     <link rel="apple-touch-icon" sizes="180x180" href="~/images/apple-touch-icon.png" />
     <link rel="manifest" href="~/site.webmanifest" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script type="application/ld+json">@Html.Raw(organizationSchema)</script>
+    @await RenderSectionAsync("Head", required: false)
 </head>
-<body>
+<body class="@bodyClass">
     <a class="skip-link" href="#main-content">Skip to content</a>
 
-    <header class="site-header">
+    <header class="site-header" data-site-header>
         <nav class="site-nav container" aria-label="Primary navigation">
             <a class="brand" asp-page="/Index" aria-label="FlyJustice Lite home">
-                <img src="~/images/flyjustice-logo.png" alt="" width="40" height="40" />
-                <span>FlyJustice Lite</span>
+                <span class="brand-mark" aria-hidden="true">
+                    <svg class="icon"><use href="/images/icons.svg#plane"></use></svg>
+                </span>
+                <span class="brand-copy">
+                    <strong>FlyJustice</strong>
+                    <small>Passenger claims</small>
+                </span>
             </a>
-            <div class="nav-links">
-                <a asp-page="/Rights">Rights</a>
-                <a asp-page="/Services">Services</a>
-                <a asp-page="/Fees">Fees</a>
-                <a asp-page="/Faqs">FAQs</a>
-                <a asp-page="/About">About</a>
-                <a asp-page="/WhyChooseUs">Why us</a>
-                <a asp-page="/Claims/Submit">Submit</a>
-                <a asp-page="/Claims/Track">Track</a>
+
+            <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="primary-menu">
+                <span class="sr-only">Open navigation</span>
+                <svg class="icon icon-menu"><use href="/images/icons.svg#menu"></use></svg>
+                <svg class="icon icon-close"><use href="/images/icons.svg#close"></use></svg>
+            </button>
+
+            <div class="nav-menu" id="primary-menu" data-nav-menu>
+                <div class="nav-links">
+                    <a asp-page="/Rights">Passenger rights</a>
+                    <a asp-page="/Services">How it works</a>
+                    <a asp-page="/Fees">Fees</a>
+                    <a asp-page="/Faqs">Help</a>
+                    <a asp-page="/About">About</a>
+                </div>
+                <div class="nav-actions">
+                    <a class="nav-track" asp-page="/Claims/Track">
+                        <svg class="icon"><use href="/images/icons.svg#search"></use></svg>
+                        Track claim
+                    </a>
+                    <a class="button button-primary button-small" asp-page="/Index" asp-fragment="eligibility">
+                        Check my flight
+                    </a>
+                </div>
             </div>
         </nav>
     </header>
@@ -76,38 +127,61 @@
     {
         <div class="toast toast-@toastType" data-toast role="status" aria-live="polite">
             <span>@toastMessage</span>
-            <button type="button" class="toast-close" data-toast-close aria-label="Dismiss notification">×</button>
+            <button type="button" class="toast-close" data-toast-close aria-label="Dismiss notification">
+                <svg class="icon"><use href="/images/icons.svg#close"></use></svg>
+            </button>
         </div>
     }
 
     <footer class="site-footer">
+        <div class="footer-cta">
+            <div class="container footer-cta-inner">
+                <div>
+                    <p class="eyebrow eyebrow-light">Your journey should not end at disruption</p>
+                    <h2>See whether your flight may be worth up to EUR 600.</h2>
+                </div>
+                <a class="button button-light" asp-page="/Index" asp-fragment="eligibility">
+                    Check eligibility
+                    <svg class="icon"><use href="/images/icons.svg#arrow-right"></use></svg>
+                </a>
+            </div>
+        </div>
+
         <div class="container footer-grid">
             <div class="footer-brand">
-                <a class="brand" asp-page="/Index" aria-label="FlyJustice Lite home">
-                    <img src="~/images/flyjustice-logo.png" alt="" width="40" height="40" />
-                    <span>FlyJustice Lite</span>
+                <a class="brand brand-light" asp-page="/Index">
+                    <span class="brand-mark" aria-hidden="true">
+                        <svg class="icon"><use href="/images/icons.svg#plane"></use></svg>
+                    </span>
+                    <span class="brand-copy">
+                        <strong>FlyJustice</strong>
+                        <small>Passenger claims</small>
+                    </span>
                 </a>
-                <p>You fly, we help organize the claim. EU 261 compensation workflows for passenger disruptions.</p>
+                <p>Clear guidance and structured claim support for delayed, cancelled, and disrupted flights.</p>
+                <span class="footer-badge">
+                    <svg class="icon"><use href="/images/icons.svg#shield-check"></use></svg>
+                    GDPR-aware claim handling
+                </span>
             </div>
-            <nav aria-label="Footer services">
-                <h2>Services</h2>
-                <a asp-page="/Claims/Submit">Check Flight Compensation</a>
-                <a asp-page="/Claims/Track">Track Your Claim</a>
-                <a asp-page="/Rights" asp-route-slug="flight-delay">Flight Delays</a>
-                <a asp-page="/Rights" asp-route-slug="flight-cancellation">Flight Cancellations</a>
-                <a asp-page="/Rights" asp-route-slug="missed-connection">Missed Connections</a>
+            <nav aria-label="Passenger rights">
+                <h2>Passenger rights</h2>
+                <a asp-page="/Rights" asp-route-slug="flight-delay">Flight delays</a>
+                <a asp-page="/Rights" asp-route-slug="flight-cancellation">Cancellations</a>
+                <a asp-page="/Rights" asp-route-slug="missed-connection">Missed connections</a>
+                <a asp-page="/Rights" asp-route-slug="denied-boarding">Denied boarding</a>
+                <a asp-page="/Rights" asp-route-slug="eu-261-2004">EU 261 guide</a>
             </nav>
-            <nav aria-label="Footer links">
-                <h2>Quick links</h2>
-                <a asp-page="/Services">Our Services</a>
+            <nav aria-label="Company links">
+                <h2>FlyJustice</h2>
+                <a asp-page="/Services">How it works</a>
                 <a asp-page="/Fees">Fees</a>
                 <a asp-page="/Faqs">FAQs</a>
-                <a asp-page="/About">About</a>
-                <a asp-page="/WhyChooseUs">Why Choose Us</a>
+                <a asp-page="/About">About us</a>
                 <a asp-page="/Contact">Contact</a>
             </nav>
-            <nav aria-label="Footer compliance">
-                <h2>Compliance</h2>
+            <nav aria-label="Legal links">
+                <h2>Legal</h2>
                 <a asp-page="/Legal" asp-route-slug="terms">Terms</a>
                 <a asp-page="/Legal" asp-route-slug="privacy">Privacy</a>
                 <a asp-page="/Legal" asp-route-slug="gdpr">GDPR</a>
@@ -115,7 +189,7 @@
             </nav>
             <div class="footer-bottom">
                 <span>&copy; @DateTime.UtcNow.Year FlyJustice Lite</span>
-                <span>Professional passenger claim intake and tracking.</span>
+                <span>Information on this website is general guidance, not independent legal advice.</span>
             </div>
         </div>
     </footer>

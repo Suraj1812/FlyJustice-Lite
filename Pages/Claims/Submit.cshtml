@@ -1,87 +1,123 @@
 @page
 @model FlyJusticeLite.Pages.Claims.SubmitModel
 @{
-    ViewData["Title"] = "Submit Claim";
-    ViewData["MetaDescription"] = "Submit passenger, flight, and ticket details for a FlyJustice Lite compensation claim.";
+    ViewData["Title"] = "Submit a Flight Claim";
+    ViewData["MetaDescription"] = "Submit passenger details, flight information, delay time, and a ticket document for a FlyJustice Lite compensation claim.";
 }
 
-<section class="container narrow stack-lg">
-    <div class="page-heading">
-        <p class="eyebrow">New claim</p>
-        <h1>Submit passenger and flight details.</h1>
-        <p>Upload a ticket or booking document so the claim team can review the case.</p>
+<section class="page-hero">
+    <div class="container page-hero-inner">
+        <p class="eyebrow eyebrow-light">New compensation claim</p>
+        <h1>Turn your flight details into a tracked claim.</h1>
+        <p>Complete the passenger and flight information, then upload one valid ticket or booking document. You will receive a claim number immediately after submission.</p>
     </div>
+</section>
 
-    <form method="post" enctype="multipart/form-data" class="form-panel stack-md" data-loading-form>
-        <partial name="_ValidationSummary" />
-
-        <section class="form-section" aria-labelledby="passenger-heading">
-            <h2 id="passenger-heading">Passenger</h2>
-            <div class="form-grid">
-                <div class="field">
-                    <label asp-for="Input.FullName"></label>
-                    <input asp-for="Input.FullName" autocomplete="name" />
-                    <span asp-validation-for="Input.FullName"></span>
-                </div>
-                <div class="field">
-                    <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" autocomplete="email" />
-                    <span asp-validation-for="Input.Email"></span>
-                </div>
-                <div class="field full">
-                    <label asp-for="Input.Phone"></label>
-                    <input asp-for="Input.Phone" autocomplete="tel" />
-                    <span asp-validation-for="Input.Phone"></span>
-                </div>
+<section class="page-shell">
+    <div class="container claim-layout">
+        <form method="post" enctype="multipart/form-data" class="form-panel stack-md" data-loading-form>
+            <div>
+                <p class="eyebrow">Claim intake</p>
+                <h2>Passenger and journey details</h2>
             </div>
-        </section>
+            <partial name="_ValidationSummary" />
 
-        <section class="form-section" aria-labelledby="flight-heading">
-            <h2 id="flight-heading">Flight Details</h2>
-            <div class="form-grid">
-                <div class="field">
-                    <label asp-for="Input.FlightNumber"></label>
-                    <input asp-for="Input.FlightNumber" autocomplete="off" />
-                    <span asp-validation-for="Input.FlightNumber"></span>
+            <section class="form-section" aria-labelledby="passenger-heading">
+                <h2 id="passenger-heading">1. Passenger</h2>
+                <div class="form-grid">
+                    <div class="field">
+                        <label asp-for="Input.FullName"></label>
+                        <input asp-for="Input.FullName" autocomplete="name" placeholder="Full legal name" />
+                        <span asp-validation-for="Input.FullName"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Input.Email"></label>
+                        <input asp-for="Input.Email" autocomplete="email" placeholder="name@example.com" />
+                        <span asp-validation-for="Input.Email"></span>
+                    </div>
+                    <div class="field full">
+                        <label asp-for="Input.Phone"></label>
+                        <input asp-for="Input.Phone" autocomplete="tel" placeholder="+44 7700 900000" />
+                        <span asp-validation-for="Input.Phone"></span>
+                    </div>
                 </div>
-                <div class="field">
-                    <label asp-for="Input.Airline"></label>
-                    <input asp-for="Input.Airline" autocomplete="organization" />
-                    <span asp-validation-for="Input.Airline"></span>
+            </section>
+
+            <section class="form-section" aria-labelledby="flight-heading">
+                <h2 id="flight-heading">2. Flight</h2>
+                <div class="form-grid">
+                    <div class="field">
+                        <label asp-for="Input.FlightNumber"></label>
+                        <input asp-for="Input.FlightNumber" autocomplete="off" placeholder="BA492" />
+                        <span asp-validation-for="Input.FlightNumber"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Input.Airline"></label>
+                        <input asp-for="Input.Airline" autocomplete="organization" placeholder="British Airways" />
+                        <span asp-validation-for="Input.Airline"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Input.DepartureAirport"></label>
+                        <input asp-for="Input.DepartureAirport" placeholder="London Heathrow" />
+                        <span asp-validation-for="Input.DepartureAirport"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Input.ArrivalAirport"></label>
+                        <input asp-for="Input.ArrivalAirport" placeholder="Gibraltar" />
+                        <span asp-validation-for="Input.ArrivalAirport"></span>
+                    </div>
+                    <div class="field full">
+                        <label asp-for="Input.DelayMinutes"></label>
+                        <input asp-for="Input.DelayMinutes" inputmode="numeric" min="0" max="1440" placeholder="315" />
+                        <span class="field-hint">Use the arrival delay at the final destination.</span>
+                        <span asp-validation-for="Input.DelayMinutes"></span>
+                    </div>
                 </div>
-                <div class="field">
-                    <label asp-for="Input.DepartureAirport"></label>
-                    <input asp-for="Input.DepartureAirport" />
-                    <span asp-validation-for="Input.DepartureAirport"></span>
+            </section>
+
+            <section class="form-section" aria-labelledby="document-heading">
+                <h2 id="document-heading">3. Evidence</h2>
+                <div class="upload-zone">
+                    <div class="upload-zone-header">
+                        <span class="icon-tile"><svg class="icon"><use href="/images/icons.svg#upload"></use></svg></span>
+                        <div>
+                            <strong>Ticket or booking document</strong>
+                            <span id="selected-file">PDF, JPG, or PNG up to 10 MB</span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="sr-only" asp-for="Input.TicketUpload"></label>
+                        <input asp-for="Input.TicketUpload"
+                               type="file"
+                               accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                               data-file-input
+                               data-file-output="#selected-file" />
+                        <span asp-validation-for="Input.TicketUpload"></span>
+                    </div>
                 </div>
-                <div class="field">
-                    <label asp-for="Input.ArrivalAirport"></label>
-                    <input asp-for="Input.ArrivalAirport" />
-                    <span asp-validation-for="Input.ArrivalAirport"></span>
-                </div>
-                <div class="field full">
-                    <label asp-for="Input.DelayMinutes"></label>
-                    <input asp-for="Input.DelayMinutes" inputmode="numeric" min="0" max="1440" />
-                    <span asp-validation-for="Input.DelayMinutes"></span>
-                </div>
+            </section>
+
+            <div class="form-actions">
+                <a class="button button-secondary" asp-page="/Index">Back</a>
+                <button class="button button-primary" type="submit" data-submit-button data-loading-text="Creating claim...">
+                    Submit claim
+                    <svg class="icon"><use href="/images/icons.svg#arrow-right"></use></svg>
+                </button>
             </div>
-        </section>
+        </form>
 
-        <section class="form-section" aria-labelledby="document-heading">
-            <h2 id="document-heading">Document</h2>
-            <div class="field">
-                <label asp-for="Input.TicketUpload"></label>
-                <input asp-for="Input.TicketUpload" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
-                <span class="field-hint">PDF, JPG, or PNG. Maximum 10 MB.</span>
-                <span asp-validation-for="Input.TicketUpload"></span>
+        <aside class="claim-aside">
+            <div class="claim-aside-panel">
+                <p class="eyebrow eyebrow-light">What happens next</p>
+                <h2>Your claim number appears immediately.</h2>
+                <p>Use it to open the tracking page from any device. No password or registration is required.</p>
+                <ul class="claim-checks">
+                    <li><svg class="icon"><use href="/images/icons.svg#file-check"></use></svg> File content is checked, not only its extension</li>
+                    <li><svg class="icon"><use href="/images/icons.svg#shield-check"></use></svg> Documents are stored outside the public web folder</li>
+                    <li><svg class="icon"><use href="/images/icons.svg#euro"></use></svg> Compensation is calculated from the delay</li>
+                    <li><svg class="icon"><use href="/images/icons.svg#search"></use></svg> Status remains available by claim number</li>
+                </ul>
             </div>
-        </section>
-
-        <div class="form-actions">
-            <a class="button button-secondary" asp-page="/Index">Back</a>
-            <button class="button button-primary" type="submit" data-submit-button data-loading-text="Submitting...">
-                Submit Claim
-            </button>
-        </div>
-    </form>
+        </aside>
+    </div>
 </section>

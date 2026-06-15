@@ -3,9 +3,11 @@ using FlyJusticeLite.Models;
 using FlyJusticeLite.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FlyJusticeLite.Pages.Claims;
 
+[EnableRateLimiting("public-form")]
 public sealed class TrackModel : PageModel
 {
     private readonly IClaimService _claims;

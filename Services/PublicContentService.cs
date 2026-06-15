@@ -25,10 +25,52 @@ public sealed class PublicContentService : IPublicContentService
 
     private static readonly IReadOnlyList<TrustPoint> TrustPoints =
     [
-        new("Passenger-first workflow", "The product is built around fast intake, clear status tracking, and simple handoff to a review team."),
-        new("No upfront friction", "Passengers can check eligibility and submit a case without complicated account setup."),
-        new("GDPR-aware handling", "Forms collect only the claim data needed for review and ticket files are stored under claim-specific paths."),
-        new("Operational admin tools", "Search, pagination, status updates, document review, and deletion are included for claim teams.")
+        new("Passenger-first by design", "No account maze. Check eligibility, submit evidence, and track progress with one claim number."),
+        new("No win, no fee model", "Eligibility and submission are free. A service fee applies only when compensation is recovered."),
+        new("GDPR-aware handling", "The platform collects only the information needed to assess and operate a passenger claim."),
+        new("Clear case progress", "Every claim moves through a simple, visible status journey from submission to a final decision.")
+    ];
+
+    private static readonly IReadOnlyList<SupportedAirline> SupportedAirlines =
+    [
+        new("British Airways", "BA"),
+        new("Lufthansa", "LH"),
+        new("Air France", "AF"),
+        new("KLM", "KL"),
+        new("Ryanair", "FR"),
+        new("easyJet", "U2"),
+        new("Wizz Air", "W6"),
+        new("Iberia", "IB"),
+        new("TAP Air Portugal", "TP"),
+        new("Aer Lingus", "EI"),
+        new("SAS", "SK"),
+        new("Vueling", "VY")
+    ];
+
+    private static readonly IReadOnlyList<PassengerStory> PassengerStories =
+    [
+        new(
+            "The eligibility check took less than a minute, and I always knew what the next step was.",
+            "Maya R.",
+            "London to Lisbon",
+            "Approved for EUR 400"),
+        new(
+            "I uploaded my booking confirmation from my phone and tracked the claim without creating another account.",
+            "Daniel K.",
+            "Berlin to Barcelona",
+            "Approved for EUR 250"),
+        new(
+            "The airline called it extraordinary circumstances. The review explained what evidence still mattered.",
+            "Sofia P.",
+            "Paris to Athens",
+            "Case moved to review")
+    ];
+
+    private static readonly IReadOnlyList<SuccessStory> SuccessStories =
+    [
+        new("Manchester to Madrid", "Flight arrived 4h 18m late", "Delay evidence accepted after review", "EUR 400"),
+        new("Dublin to Amsterdam", "Cancellation announced on departure day", "Rerouting and compensation assessed", "EUR 250"),
+        new("Frankfurt to Rome", "Connection missed on one booking", "Final-arrival delay confirmed", "EUR 400")
     ];
 
     private static readonly IReadOnlyList<PublicContentPage> RightsPages =
@@ -195,6 +237,12 @@ public sealed class PublicContentService : IPublicContentService
     public IReadOnlyList<ProcessStep> GetProcessSteps() => ProcessSteps;
 
     public IReadOnlyList<TrustPoint> GetTrustPoints() => TrustPoints;
+
+    public IReadOnlyList<SupportedAirline> GetSupportedAirlines() => SupportedAirlines;
+
+    public IReadOnlyList<PassengerStory> GetPassengerStories() => PassengerStories;
+
+    public IReadOnlyList<SuccessStory> GetSuccessStories() => SuccessStories;
 
     public IReadOnlyList<PublicContentPage> GetRightsPages() => RightsPages;
 

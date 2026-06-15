@@ -1,45 +1,62 @@
 @page
 @model FlyJusticeLite.Pages.AboutModel
 @{
-    ViewData["Title"] = "About";
-    ViewData["MetaDescription"] = "About FlyJustice Lite, a professional passenger claim intake and tracking application for flight disruption compensation.";
+    ViewData["Title"] = "About FlyJustice";
+    ViewData["MetaDescription"] = "FlyJustice Lite makes flight compensation claims clearer for passengers and easier to operate for claim review teams.";
+    ViewData["OgImage"] = "~/images/editorial/passenger-terminal.jpg";
 }
 
-<section class="container stack-lg">
-    <div class="page-heading split">
-        <div>
-            <p class="eyebrow">About</p>
-            <h1>Built for passenger claims without the clutter.</h1>
-            <p>FlyJustice Lite gives passengers a fast way to check eligibility and submit evidence, while giving claim teams a focused review workspace.</p>
+<section class="page-hero has-image">
+    <div class="container page-hero-inner">
+        <p class="eyebrow eyebrow-light">About FlyJustice</p>
+        <h1>Built for the moment travel plans stop making sense.</h1>
+        <p>We believe passenger rights should be understandable at the airport, on a phone, and without a legal dictionary.</p>
+        <div class="page-hero-actions">
+            <a class="button button-light" asp-page="/Index" asp-fragment="eligibility">Check a flight</a>
         </div>
-        <a class="button button-primary" asp-page="/Claims/Submit">Open a claim</a>
     </div>
+</section>
 
-    <div class="article-layout">
-        <article class="article-body">
-            <section class="article-section">
-                <h2>What FlyJustice Lite does</h2>
-                <p>The app helps passengers estimate compensation, submit flight and ticket details, and track the status of a claim by claim number. Operators can search, review, update, and delete claims from the internal admin area.</p>
-            </section>
-            <section class="article-section">
-                <h2>Designed for practical EU 261 workflows</h2>
-                <p>The experience focuses on the common operational questions around delayed flights, cancellations, missed connections, denied boarding, care rights, and extraordinary circumstances.</p>
-            </section>
-            <section class="article-section">
-                <h2>Production-minded foundations</h2>
-                <p>Server-side validation, Entity Framework Core, SQL Server, file upload validation, repository/service boundaries, and health checks make the system easier to operate and extend.</p>
-            </section>
-        </article>
+<section class="section">
+    <div class="container story-layout">
+        <div class="story-copy">
+            <p class="eyebrow">Our purpose</p>
+            <h2>Make the claim journey feel smaller than the disruption.</h2>
+            <p>A delayed or cancelled flight creates enough uncertainty. FlyJustice Lite reduces the next step to a clear sequence: understand the right, provide the facts, attach evidence, and follow the status.</p>
+            <p>Behind the passenger experience is a focused operations workspace for search, document review, compensation estimates, and status decisions.</p>
+        </div>
+        <div class="story-media">
+            <img src="~/images/editorial/passenger-terminal.jpg"
+                 alt="Passenger reviewing flight information at an airport departure board"
+                 width="1448"
+                 height="1086"
+                 loading="lazy"
+                 decoding="async" />
+        </div>
+    </div>
+</section>
 
-        <aside class="side-panel stack-md">
-            <h2>Trust signals</h2>
+<section class="section section-soft">
+    <div class="container">
+        <div class="section-heading centered">
+            <p class="eyebrow">What guides the product</p>
+            <h2>Less friction. Better evidence. Clearer outcomes.</h2>
+        </div>
+        <div class="trust-grid">
             @foreach (var point in Model.TrustPoints)
             {
-                <div class="mini-item">
-                    <strong>@point.Title</strong>
+                <article class="trust-item">
+                    <h3><svg class="icon"><use href="/images/icons.svg#shield-check"></use></svg>@point.Title</h3>
                     <p>@point.Description</p>
-                </div>
+                </article>
             }
-        </aside>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container cta-band">
+        <div><h2>Start with the facts of your flight.</h2><p>The first eligibility check takes about a minute.</p></div>
+        <a class="button button-light" asp-page="/Index" asp-fragment="eligibility">Check eligibility</a>
     </div>
 </section>

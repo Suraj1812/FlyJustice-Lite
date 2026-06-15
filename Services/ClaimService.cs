@@ -25,7 +25,9 @@ public sealed class ClaimService : IClaimService
         ClaimSubmissionInput input,
         CancellationToken cancellationToken = default)
     {
-        var fileErrors = _fileStorage.ValidateTicketUpload(input.TicketUpload);
+        var fileErrors = await _fileStorage.ValidateTicketUploadAsync(
+            input.TicketUpload,
+            cancellationToken);
 
         if (fileErrors.Count > 0)
         {

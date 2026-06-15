@@ -32,6 +32,22 @@ public sealed record TrustPoint(
     string Title,
     string Description);
 
+public sealed record SupportedAirline(
+    string Name,
+    string Code);
+
+public sealed record PassengerStory(
+    string Quote,
+    string Passenger,
+    string Route,
+    string Outcome);
+
+public sealed record SuccessStory(
+    string Route,
+    string Disruption,
+    string Resolution,
+    string Amount);
+
 public sealed record FaqCategory(
     string Name,
     string Description,

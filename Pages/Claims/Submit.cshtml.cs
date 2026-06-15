@@ -2,9 +2,11 @@ using FlyJusticeLite.Services;
 using FlyJusticeLite.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FlyJusticeLite.Pages.Claims;
 
+[EnableRateLimiting("public-form")]
 public sealed class SubmitModel : PageModel
 {
     private readonly IClaimService _claims;

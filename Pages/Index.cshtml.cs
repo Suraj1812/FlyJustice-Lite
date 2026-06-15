@@ -2,9 +2,11 @@ using FlyJusticeLite.Services;
 using FlyJusticeLite.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FlyJusticeLite.Pages;
 
+[EnableRateLimiting("public-form")]
 public sealed class IndexModel : PageModel
 {
     private readonly ICompensationCalculator _calculator;
@@ -34,6 +36,12 @@ public sealed class IndexModel : PageModel
 
     public IReadOnlyList<TrustPoint> TrustPoints { get; private set; } = [];
 
+    public IReadOnlyList<SupportedAirline> SupportedAirlines { get; private set; } = [];
+
+    public IReadOnlyList<PassengerStory> PassengerStories { get; private set; } = [];
+
+    public IReadOnlyList<SuccessStory> SuccessStories { get; private set; } = [];
+
     public IReadOnlyList<FaqItem> FaqPreview { get; private set; } = [];
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
@@ -61,6 +69,9 @@ public sealed class IndexModel : PageModel
         Services = _content.GetServiceFeatures().Take(4).ToList();
         ProcessSteps = _content.GetProcessSteps();
         TrustPoints = _content.GetTrustPoints();
+        SupportedAirlines = _content.GetSupportedAirlines();
+        PassengerStories = _content.GetPassengerStories();
+        SuccessStories = _content.GetSuccessStories();
         FaqPreview = _content.GetFaqCategories()
             .SelectMany(category => category.Items)
             .Take(4)

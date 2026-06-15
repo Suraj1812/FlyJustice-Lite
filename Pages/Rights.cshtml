@@ -2,85 +2,118 @@
 @model FlyJusticeLite.Pages.RightsModel
 @{
     ViewData["Title"] = Model.PageContent?.Title ?? "Passenger Rights";
-    ViewData["MetaDescription"] = Model.PageContent?.Summary ?? "Learn EU passenger rights for delays, cancellations, missed connections, denied boarding, strikes, weather, and care.";
+    ViewData["MetaDescription"] = Model.PageContent?.Summary ?? "Practical EU passenger rights guides for flight delays, cancellations, missed connections, denied boarding, strikes, weather, and care.";
+    ViewData["OgImage"] = "~/images/editorial/passenger-terminal.jpg";
 }
 
 @if (Model.PageContent is null)
 {
-    <section class="container stack-lg">
-        <div class="page-heading split">
-            <div>
-                <p class="eyebrow">Your rights</p>
-                <h1>Know what airlines owe passengers.</h1>
-                <p>Browse common disruption types and see when compensation, refunds, rerouting, or care may apply.</p>
+    <section class="page-hero has-image">
+        <div class="container page-hero-inner">
+            <p class="eyebrow eyebrow-light">Passenger rights library</p>
+            <h1>Know what the airline owes you.</h1>
+            <p>Practical guides for delays, cancellations, missed connections, denied boarding, overbooking, care, and extraordinary circumstances.</p>
+            <div class="page-hero-actions">
+                <a class="button button-light" asp-page="/Index" asp-fragment="eligibility">Check my flight</a>
+                <a class="button button-ghost-light" asp-page="/Claims/Submit">Submit evidence</a>
             </div>
-            <a class="button button-primary" asp-page="/Claims/Submit">Start your claim</a>
         </div>
+    </section>
 
-        <div class="content-grid">
-            @foreach (var contentPage in Model.Pages)
-            {
-                <article class="content-card">
-                    <p class="eyebrow">@contentPage.Eyebrow</p>
-                    <h2>@contentPage.Title</h2>
-                    <p>@contentPage.Summary</p>
-                    <a class="text-link" asp-page="/Rights" asp-route-slug="@contentPage.Slug">Read guide</a>
-                </article>
-            }
+    <section class="section">
+        <div class="container">
+            <div class="section-heading">
+                <p class="eyebrow">Choose a disruption</p>
+                <h2>Start with what happened.</h2>
+                <p>Each guide explains when compensation may apply, what other rights remain available, and which documents make the claim easier to assess.</p>
+            </div>
+            <div class="rights-index">
+                @foreach (var contentPage in Model.Pages)
+                {
+                    <a class="guide-link" asp-page="/Rights" asp-route-slug="@contentPage.Slug">
+                        <div>
+                            <p class="eyebrow">@contentPage.Eyebrow</p>
+                            <h2>@contentPage.Title</h2>
+                            <p>@contentPage.Summary</p>
+                        </div>
+                        <span class="text-link">
+                            Read this guide
+                            <svg class="icon"><use href="/images/icons.svg#arrow-right"></use></svg>
+                        </span>
+                    </a>
+                }
+            </div>
         </div>
     </section>
 }
 else
 {
-    <section class="container stack-lg">
-        <div class="page-heading split">
-            <div>
-                <p class="eyebrow">@Model.PageContent.Eyebrow</p>
-                <h1>@Model.PageContent.Title</h1>
-                <p>@Model.PageContent.Summary</p>
+    <section class="page-hero has-image">
+        <div class="container page-hero-inner">
+            <p class="eyebrow eyebrow-light">@Model.PageContent.Eyebrow</p>
+            <h1>@Model.PageContent.Title</h1>
+            <p>@Model.PageContent.Summary</p>
+            <div class="page-hero-actions">
+                <a class="button button-light" href="@Url.Page(Model.PageContent.CtaPage)">@Model.PageContent.CtaText</a>
+                <a class="button button-ghost-light" asp-page="/Index" asp-fragment="eligibility">Check eligibility</a>
             </div>
-            <a class="button button-primary" href="@Url.Page(Model.PageContent.CtaPage)">@Model.PageContent.CtaText</a>
         </div>
+    </section>
 
-        @if (Model.PageContent.Highlights.Count > 0)
-        {
-            <div class="highlight-strip">
-                @foreach (var highlight in Model.PageContent.Highlights)
-                {
-                    <span>@highlight</span>
-                }
-            </div>
-        }
-
-        <div class="article-layout">
-            <article class="article-body">
-                @foreach (var contentBlock in Model.PageContent.Sections)
-                {
-                    <section class="article-section">
-                        <h2>@contentBlock.Heading</h2>
-                        <p>@contentBlock.Body</p>
-                        @if (contentBlock.Bullets is { Count: > 0 })
-                        {
-                            <ul class="check-list">
-                                @foreach (var bullet in contentBlock.Bullets)
-                                {
-                                    <li>@bullet</li>
-                                }
-                            </ul>
-                        }
-                    </section>
-                }
-            </article>
-
-            <aside class="side-panel stack-md">
-                <h2>Related guides</h2>
-                <nav class="side-nav" aria-label="Related passenger rights">
-                    @foreach (var relatedPage in Model.Pages.Where(item => item.Slug != Model.PageContent.Slug).Take(6))
+    <section class="page-shell">
+        <div class="container">
+            @if (Model.PageContent.Highlights.Count > 0)
+            {
+                <div class="highlight-strip" aria-label="Key points">
+                    @foreach (var highlight in Model.PageContent.Highlights)
                     {
-                        <a asp-page="/Rights" asp-route-slug="@relatedPage.Slug">@relatedPage.Title</a>
+                        <span><svg class="icon"><use href="/images/icons.svg#check"></use></svg>@highlight</span>
                     }
-                </nav>
-            </aside>
+                </div>
+            }
+
+            <div class="article-layout">
+                <article class="article-body">
+                    @foreach (var contentBlock in Model.PageContent.Sections)
+                    {
+                        <section class="article-section">
+                            <h2>@contentBlock.Heading</h2>
+                            <p>@contentBlock.Body</p>
+                            @if (contentBlock.Bullets is { Count: > 0 })
+                            {
+                                <ul class="check-list">
+                                    @foreach (var bullet in contentBlock.Bullets)
+                                    {
+                                        <li>@bullet</li>
+                                    }
+                                </ul>
+                            }
+                        </section>
+                    }
+
+                    <section class="notice-panel">
+                        <h2>Evidence to keep</h2>
+                        <p>Keep your booking confirmation, boarding pass, airline messages, replacement itinerary, and reasonable expense receipts. A clear timeline is often as important as the ticket itself.</p>
+                    </section>
+                </article>
+
+                <aside class="side-panel stack-md">
+                    <div>
+                        <p class="eyebrow">Related rights</p>
+                        <h2>Continue reading</h2>
+                    </div>
+                    <nav class="side-nav" aria-label="Related passenger rights">
+                        @foreach (var relatedPage in Model.Pages.Where(item => item.Slug != Model.PageContent.Slug).Take(6))
+                        {
+                            <a asp-page="/Rights" asp-route-slug="@relatedPage.Slug">
+                                @relatedPage.Title
+                                <svg class="icon"><use href="/images/icons.svg#chevron-right"></use></svg>
+                            </a>
+                        }
+                    </nav>
+                    <a class="button button-primary button-wide" asp-page="/Claims/Submit">Start a claim</a>
+                </aside>
+            </div>
         </div>
     </section>
 }

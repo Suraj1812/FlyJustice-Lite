@@ -1,49 +1,70 @@
 @page
 @model FlyJusticeLite.Pages.ContactModel
 @{
-    ViewData["Title"] = "Contact";
-    ViewData["MetaDescription"] = "Contact FlyJustice Lite about a passenger claim, claim number, or flight compensation workflow.";
+    ViewData["Title"] = "Contact Claim Support";
+    ViewData["MetaDescription"] = "Contact FlyJustice Lite about a passenger claim, flight compensation eligibility, documents, or claim tracking.";
 }
 
-<section class="container narrow stack-lg">
-    <div class="page-heading">
-        <p class="eyebrow">Contact</p>
-        <h1>Send a claim support message.</h1>
-        <p>Use this form for claim questions, document follow-up, or operational support. Include a claim number if you already have one.</p>
+<section class="page-hero">
+    <div class="container page-hero-inner">
+        <p class="eyebrow eyebrow-light">Claim support</p>
+        <h1>Tell us where the journey became unclear.</h1>
+        <p>Ask about eligibility, evidence, an existing claim number, or a flight disruption guide. Do not include unnecessary sensitive information.</p>
     </div>
+</section>
 
-    <form method="post" class="form-panel stack-md" data-loading-form>
-        <partial name="_ValidationSummary" />
+<section class="page-shell">
+    <div class="container claim-layout">
+        <form method="post" class="form-panel stack-md" data-loading-form>
+            <div>
+                <p class="eyebrow">Send a message</p>
+                <h2>How can we help?</h2>
+            </div>
+            <partial name="_ValidationSummary" />
+            <div class="form-grid">
+                <div class="field">
+                    <label asp-for="Input.FullName"></label>
+                    <input asp-for="Input.FullName" autocomplete="name" />
+                    <span asp-validation-for="Input.FullName"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" autocomplete="email" />
+                    <span asp-validation-for="Input.Email"></span>
+                </div>
+                <div class="field full">
+                    <label asp-for="Input.ClaimNumber"></label>
+                    <input asp-for="Input.ClaimNumber" placeholder="FJL-20260615-1001" autocomplete="off" />
+                    <span asp-validation-for="Input.ClaimNumber"></span>
+                </div>
+                <div class="field full">
+                    <label asp-for="Input.Message"></label>
+                    <textarea asp-for="Input.Message" rows="7" placeholder="Tell us what happened and what you need help with."></textarea>
+                    <span class="field-hint">Minimum 20 characters.</span>
+                    <span asp-validation-for="Input.Message"></span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <a class="button button-secondary" asp-page="/Claims/Track">Track instead</a>
+                <button class="button button-primary" type="submit" data-submit-button data-loading-text="Sending...">
+                    Send message
+                    <svg class="icon"><use href="/images/icons.svg#arrow-right"></use></svg>
+                </button>
+            </div>
+        </form>
 
-        <div class="form-grid">
-            <div class="field">
-                <label asp-for="Input.FullName"></label>
-                <input asp-for="Input.FullName" autocomplete="name" />
-                <span asp-validation-for="Input.FullName"></span>
+        <aside class="claim-aside">
+            <div class="claim-aside-panel">
+                <p class="eyebrow eyebrow-light">Faster answers</p>
+                <h2>Already have a claim number?</h2>
+                <p>The tracking page shows the latest status, compensation estimate, flight route, and submission date immediately.</p>
+                <a class="button button-light button-wide" asp-page="/Claims/Track">Track my claim</a>
+                <ul class="claim-checks">
+                    <li><svg class="icon"><use href="/images/icons.svg#clock"></use></svg> Available at any time</li>
+                    <li><svg class="icon"><use href="/images/icons.svg#shield-check"></use></svg> No login required</li>
+                    <li><svg class="icon"><use href="/images/icons.svg#headset"></use></svg> Clear support path</li>
+                </ul>
             </div>
-            <div class="field">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" autocomplete="email" />
-                <span asp-validation-for="Input.Email"></span>
-            </div>
-            <div class="field full">
-                <label asp-for="Input.ClaimNumber"></label>
-                <input asp-for="Input.ClaimNumber" placeholder="FJL-20260615-1001" autocomplete="off" />
-                <span asp-validation-for="Input.ClaimNumber"></span>
-            </div>
-            <div class="field full">
-                <label asp-for="Input.Message"></label>
-                <textarea asp-for="Input.Message" rows="7"></textarea>
-                <span class="field-hint">Minimum 20 characters. Avoid sharing unnecessary sensitive information.</span>
-                <span asp-validation-for="Input.Message"></span>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <a class="button button-secondary" asp-page="/Claims/Track">Track claim</a>
-            <button class="button button-primary" type="submit" data-submit-button data-loading-text="Sending...">
-                Send message
-            </button>
-        </div>
-    </form>
+        </aside>
+    </div>
 </section>

@@ -1,47 +1,79 @@
 @page
 @model FlyJusticeLite.Pages.ServicesModel
 @{
-    ViewData["Title"] = "Services";
-    ViewData["MetaDescription"] = "Flight compensation services for delays, cancellations, missed connections, denied boarding, and passenger care.";
+    ViewData["Title"] = "How Flight Claims Work";
+    ViewData["MetaDescription"] = "See how FlyJustice Lite checks eligibility, accepts flight evidence, estimates compensation, supports review, and provides claim tracking.";
 }
 
-<section class="container stack-lg">
-    <div class="page-heading split">
-        <div>
-            <p class="eyebrow">Our services</p>
-            <h1>One workflow for disrupted passengers.</h1>
-            <p>FlyJustice Lite combines eligibility checks, evidence upload, claim tracking, and admin review tools.</p>
+<section class="page-hero">
+    <div class="container page-hero-inner">
+        <p class="eyebrow eyebrow-light">How it works</p>
+        <h1>A clear route from disruption to decision.</h1>
+        <p>FlyJustice Lite organizes the facts, evidence, compensation estimate, and claim status without asking passengers to navigate a legal case management system.</p>
+        <div class="page-hero-actions">
+            <a class="button button-light" asp-page="/Index" asp-fragment="eligibility">Check a flight</a>
+            <a class="button button-ghost-light" asp-page="/Claims/Track">Track a claim</a>
         </div>
-        <a class="button button-primary" asp-page="/Claims/Submit">Submit a claim</a>
     </div>
+</section>
 
-    <div class="content-grid">
-        @foreach (var service in Model.Services)
-        {
-            <article class="content-card">
-                <h2>@service.Title</h2>
-                <p>@service.Description</p>
-                <a class="text-link" href="@Url.Page(service.Page, new { slug = service.Slug })">@service.LinkText</a>
-            </article>
-        }
-    </div>
-
-    <section class="section-band">
-        <div class="page-heading centered">
-            <p class="eyebrow">How it works</p>
-            <h2>From flight details to claim status.</h2>
-            <p>The passenger handles the first two steps. The claim team can manage review and status updates from the admin area.</p>
+<section class="section">
+    <div class="container">
+        <div class="section-heading">
+            <p class="eyebrow">One platform, several disruption types</p>
+            <h2>Passenger-rights support built around the journey.</h2>
         </div>
-        <div class="process-grid">
+        <div class="rights-index">
+            @foreach (var service in Model.Services)
+            {
+                <a class="guide-link" href="@Url.Page(service.Page, new { slug = service.Slug })">
+                    <div>
+                        <h2>@service.Title</h2>
+                        <p>@service.Description</p>
+                    </div>
+                    <span class="text-link">@service.LinkText <svg class="icon"><use href="/images/icons.svg#arrow-right"></use></svg></span>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section section-navy">
+    <div class="container">
+        <div class="section-heading">
+            <p class="eyebrow eyebrow-light">The claim process</p>
+            <h2>Five stages, visible from the beginning.</h2>
+        </div>
+        <div class="timeline">
             @foreach (var step in Model.ProcessSteps)
             {
-                <article class="process-step">
-                    <span>@step.Number</span>
-                    <p class="eyebrow">@(step.IsPassengerTask ? "Passenger task" : "Review task")</p>
-                    <h3>@step.Title</h3>
-                    <p>@step.Description</p>
+                <article class="timeline-step">
+                    <span class="timeline-marker">@step.Number</span>
+                    <div><h3>@step.Title</h3><p>@step.Description</p></div>
                 </article>
             }
         </div>
-    </section>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container story-layout">
+        <div class="story-copy">
+            <p class="eyebrow">What you need</p>
+            <h2>A few accurate details are better than a long form.</h2>
+            <p>The claim intake asks for passenger contact details, the operating flight, route, arrival delay, and one supporting document. The rest of the workflow is generated from that record.</p>
+            <ul class="check-list">
+                <li>Flight number and operating airline</li>
+                <li>Departure and final destination</li>
+                <li>Arrival delay in minutes</li>
+                <li>Ticket, booking confirmation, or boarding pass</li>
+            </ul>
+        </div>
+        <div class="claim-aside-panel">
+            <p class="eyebrow eyebrow-light">No account required</p>
+            <h2>Track with one claim number.</h2>
+            <p>After submission, the passenger receives a unique reference that opens the latest status, compensation estimate, flight, route, and submission time.</p>
+            <a class="button button-light" asp-page="/Claims/Track">Open claim tracking</a>
+        </div>
+    </div>
 </section>

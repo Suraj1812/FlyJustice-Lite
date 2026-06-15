@@ -4,9 +4,13 @@ namespace FlyJusticeLite.Services;
 
 public interface IFileStorageService
 {
-    IReadOnlyList<string> ValidateTicketUpload(IFormFile? file);
+    Task<IReadOnlyList<string>> ValidateTicketUploadAsync(
+        IFormFile? file,
+        CancellationToken cancellationToken = default);
 
     Task<StoredFile> SaveTicketAsync(string claimNumber, IFormFile file, CancellationToken cancellationToken = default);
+
+    Task<StoredFileDownload?> OpenTicketAsync(string filePath, CancellationToken cancellationToken = default);
 
     Task DeleteTicketAsync(string filePath, CancellationToken cancellationToken = default);
 }

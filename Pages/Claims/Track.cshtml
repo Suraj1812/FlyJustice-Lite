@@ -1,65 +1,74 @@
 @page
 @model FlyJusticeLite.Pages.Claims.TrackModel
 @{
-    ViewData["Title"] = "Track Claim";
-    ViewData["MetaDescription"] = "Track a FlyJustice Lite flight compensation claim by claim number.";
+    ViewData["Title"] = "Track a Flight Claim";
+    ViewData["MetaDescription"] = "Track a FlyJustice Lite compensation claim by claim number and view its status, compensation estimate, flight route, and submission date.";
+    var activeStage = Model.Claim?.Status switch
+    {
+        ClaimStatus.Pending => 1,
+        ClaimStatus.UnderReview => 2,
+        ClaimStatus.Approved => 4,
+        ClaimStatus.Rejected => 4,
+        _ => 0
+    };
 }
 
-<section class="container narrow stack-lg">
-    <div class="page-heading">
-        <p class="eyebrow">Claim tracking</p>
-        <h1>Find a claim by claim number.</h1>
-        <p>Use the claim number provided after submission to check the latest status.</p>
+<section class="page-hero">
+    <div class="container page-hero-inner">
+        <p class="eyebrow eyebrow-light">Claim tracking</p>
+        <h1>Your claim status, without a login.</h1>
+        <p>Enter the exact reference shown after submission. It follows the format FJL-YYYYMMDD-0000.</p>
     </div>
+</section>
 
-    <form method="post" class="search-panel" data-loading-form>
-        <div class="field search-field">
-            <label asp-for="ClaimNumber"></label>
-            <input asp-for="ClaimNumber" placeholder="FJL-20260615-1001" autocomplete="off" />
-            <span asp-validation-for="ClaimNumber"></span>
-        </div>
-        <button class="button button-primary" type="submit" data-submit-button data-loading-text="Searching...">
-            Search
-        </button>
-    </form>
-
-    @if (Model.Searched && Model.Claim is null)
-    {
-        <section class="empty-state" role="status">
-            <h2>No claim found</h2>
-            <p>Check the claim number and try again.</p>
-        </section>
-    }
-
-    @if (Model.Claim is not null)
-    {
-        <section class="detail-panel">
-            <div class="detail-header">
-                <div>
-                    <p class="eyebrow">Claim number</p>
-                    <h2>@Model.Claim.ClaimNumber</h2>
-                </div>
-                <span class="status-pill @Model.Claim.Status.ToCssClass()">@Model.Claim.Status.ToDisplayName()</span>
+<section class="page-shell">
+    <div class="container track-shell stack-lg">
+        <form method="post" class="search-panel" data-loading-form>
+            <div class="field search-field">
+                <label asp-for="ClaimNumber"></label>
+                <input asp-for="ClaimNumber" placeholder="FJL-20260615-1001" autocomplete="off" />
+                <span asp-validation-for="ClaimNumber"></span>
             </div>
+            <button class="button button-primary" type="submit" data-submit-button data-loading-text="Searching...">
+                <svg class="icon"><use href="/images/icons.svg#search"></use></svg>
+                Find claim
+            </button>
+        </form>
 
-            <dl class="detail-grid">
-                <div>
-                    <dt>Compensation Amount</dt>
-                    <dd>€@Model.Claim.CompensationAmount.ToString("0")</dd>
+        @if (Model.Searched && Model.Claim is null)
+        {
+            <section class="empty-state" role="status">
+                <span class="icon-tile"><svg class="icon"><use href="/images/icons.svg#search"></use></svg></span>
+                <h2>No claim matched that number</h2>
+                <p>Check every digit and hyphen, then try again. The claim number is case-insensitive.</p>
+            </section>
+        }
+
+        @if (Model.Claim is not null)
+        {
+            <section class="detail-panel">
+                <div class="detail-header">
+                    <div>
+                        <p class="eyebrow">Claim reference</p>
+                        <h2>@Model.Claim.ClaimNumber</h2>
+                    </div>
+                    <span class="status-pill @Model.Claim.Status.ToCssClass()">@Model.Claim.Status.ToDisplayName()</span>
                 </div>
-                <div>
-                    <dt>Submission Date</dt>
-                    <dd>@Model.Claim.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</dd>
+
+                <div class="track-journey" aria-label="Claim progress">
+                    <span class="track-node @(activeStage >= 1 ? "is-active" : "")">Submitted</span>
+                    <span class="track-node @(activeStage >= 2 ? "is-active" : "")">Review</span>
+                    <span class="track-node @(activeStage >= 3 ? "is-active" : "")">Decision</span>
+                    <span class="track-node @(activeStage >= 4 ? "is-active" : "")">Complete</span>
                 </div>
-                <div>
-                    <dt>Flight</dt>
-                    <dd>@Model.Claim.FlightNumber</dd>
-                </div>
-                <div>
-                    <dt>Route</dt>
-                    <dd>@Model.Claim.DepartureAirport to @Model.Claim.ArrivalAirport</dd>
-                </div>
-            </dl>
-        </section>
-    }
+
+                <dl class="detail-grid">
+                    <div><dt>Estimated compensation</dt><dd>€@Model.Claim.CompensationAmount.ToString("0")</dd></div>
+                    <div><dt>Submitted</dt><dd>@Model.Claim.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</dd></div>
+                    <div><dt>Flight</dt><dd>@Model.Claim.FlightNumber</dd></div>
+                    <div><dt>Route</dt><dd>@Model.Claim.DepartureAirport to @Model.Claim.ArrivalAirport</dd></div>
+                </dl>
+            </section>
+        }
+    </div>
 </section>

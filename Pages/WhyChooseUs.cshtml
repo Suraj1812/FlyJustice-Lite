@@ -1,45 +1,52 @@
 @page
 @model FlyJusticeLite.Pages.WhyChooseUsModel
 @{
-    ViewData["Title"] = "Why Choose Us";
-    ViewData["MetaDescription"] = "Why passengers and claim teams choose FlyJustice Lite for fast, transparent, GDPR-aware flight compensation workflows.";
+    ViewData["Title"] = "Why Choose FlyJustice";
+    ViewData["MetaDescription"] = "A passenger-first flight compensation experience with clear eligibility, no account barrier, GDPR-aware handling, evidence upload, and transparent tracking.";
 }
 
-<section class="container stack-lg">
-    <div class="page-heading centered">
-        <p class="eyebrow">Why choose us</p>
-        <h1>Built for fairness, speed, and clarity.</h1>
-        <p>FlyJustice Lite turns a stressful flight disruption into a structured claim journey with clear next steps and transparent tracking.</p>
-    </div>
-
-    <div class="trust-grid">
-        @foreach (var point in Model.TrustPoints)
-        {
-            <article class="trust-item">
-                <h2>@point.Title</h2>
-                <p>@point.Description</p>
-            </article>
-        }
-    </div>
-
-    <section class="section-band">
-        <div class="article-layout">
-            <article class="article-body">
-                <section class="article-section">
-                    <h2>Passenger-friendly by default</h2>
-                    <p>The claim journey avoids account creation, keeps forms focused, validates inputs clearly, and gives every claim a number that can be tracked anytime.</p>
-                </section>
-                <section class="article-section">
-                    <h2>Review-ready for operators</h2>
-                    <p>The admin area supports search, pagination, document review, status updates, and deletion without turning the product into a bloated dashboard.</p>
-                </section>
-            </article>
-            <aside class="side-panel stack-md">
-                <h2>Start now</h2>
-                <p class="muted">Check eligibility first or submit a claim with ticket evidence.</p>
-                <a class="button button-primary button-wide" asp-page="/Index">Check eligibility</a>
-                <a class="button button-secondary button-wide" asp-page="/Claims/Submit">Submit claim</a>
-            </aside>
+<section class="page-hero">
+    <div class="container page-hero-inner">
+        <p class="eyebrow eyebrow-light">Why FlyJustice</p>
+        <h1>Serious claim handling without a heavy experience.</h1>
+        <p>Passengers get a fast, understandable journey. Review teams get structured records, validated evidence, and a focused decision workflow.</p>
+        <div class="page-hero-actions">
+            <a class="button button-light" asp-page="/Claims/Submit">Start a claim</a>
+            <a class="button button-ghost-light" asp-page="/Fees">See the fee model</a>
         </div>
-    </section>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="trust-grid">
+            @foreach (var point in Model.TrustPoints)
+            {
+                <article class="trust-item">
+                    <h3><svg class="icon"><use href="/images/icons.svg#check"></use></svg>@point.Title</h3>
+                    <p>@point.Description</p>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section section-soft">
+    <div class="container story-layout">
+        <div class="claim-aside-panel">
+            <p class="eyebrow eyebrow-light">Passenger experience</p>
+            <h2>No login wall between a passenger and their claim.</h2>
+            <p>Submission creates a single claim reference. That reference is enough to view progress without managing a password or profile.</p>
+        </div>
+        <div class="story-copy">
+            <p class="eyebrow">Operational quality</p>
+            <h2>The simple front end is supported by structured case data.</h2>
+            <ul class="check-list">
+                <li>Server-side validation for every claim field</li>
+                <li>Private document storage with file-signature checks</li>
+                <li>Searchable claim records and pagination</li>
+                <li>Clear Pending, Under Review, Approved, and Rejected states</li>
+            </ul>
+        </div>
+    </div>
 </section>

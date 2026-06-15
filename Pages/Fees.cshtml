@@ -1,30 +1,37 @@
 @page
 @model FlyJusticeLite.Pages.FeesModel
 @{
-    ViewData["Title"] = "Fees";
-    ViewData["MetaDescription"] = "Transparent FlyJustice Lite fee structure for eligibility checks, claim submission, and success-based service fees.";
+    ViewData["Title"] = "Flight Claim Fees";
+    ViewData["MetaDescription"] = "Transparent FlyJustice Lite eligibility, submission, and success-based flight compensation fee information.";
 }
 
-<section class="container stack-lg">
-    <div class="page-heading centered">
-        <p class="eyebrow">Fees</p>
-        <h1>Transparent from the first check.</h1>
-        <p>Passengers should understand the cost model before submitting a claim or assigning it for review.</p>
+<section class="page-hero">
+    <div class="container page-hero-inner">
+        <p class="eyebrow eyebrow-light">Transparent fees</p>
+        <h1>Understand the cost before the claim starts.</h1>
+        <p>Eligibility and submission are free. The commercial service fee is success-based and must be set clearly in the production terms before a live claim service launches.</p>
+        <div class="page-hero-actions">
+            <a class="button button-light" asp-page="/Index" asp-fragment="eligibility">Check for free</a>
+            <a class="button button-ghost-light" asp-page="/Legal" asp-route-slug="terms">Read terms</a>
+        </div>
     </div>
+</section>
 
-    <div class="fee-grid">
-        @foreach (var fee in Model.Fees)
-        {
-            <article class="fee-card">
-                <p class="eyebrow">@fee.Title</p>
-                <h2>@fee.Amount</h2>
-                <p>@fee.Description</p>
-            </article>
-        }
+<section class="page-shell">
+    <div class="container">
+        <div class="fee-grid">
+            @foreach (var fee in Model.Fees)
+            {
+                <article class="fee-card">
+                    <p class="eyebrow">@fee.Title</p>
+                    <h2>@fee.Amount</h2>
+                    <p>@fee.Description</p>
+                </article>
+            }
+        </div>
+        <section class="notice-panel">
+            <h2>Before commercial launch</h2>
+            <p>Replace the configurable success-fee wording with the exact percentage, tax treatment, withdrawal terms, assignment language, and jurisdiction approved for the operating company.</p>
+        </section>
     </div>
-
-    <section class="notice-panel">
-        <h2>Operational note</h2>
-        <p>Set the exact commercial service fee in your production terms before launch. The app keeps the intake and tracking flow clear while allowing your legal and finance teams to define the final service contract.</p>
-    </section>
 </section>

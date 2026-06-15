@@ -1,9 +1,11 @@
 using FlyJusticeLite.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FlyJusticeLite.Pages;
 
+[EnableRateLimiting("public-form")]
 public sealed class ContactModel : PageModel
 {
     [BindProperty]

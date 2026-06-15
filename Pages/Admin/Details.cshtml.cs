@@ -9,10 +9,12 @@ namespace FlyJusticeLite.Pages.Admin;
 public sealed class DetailsModel : PageModel
 {
     private readonly IClaimService _claims;
+    private readonly IFileStorageService _fileStorage;
 
-    public DetailsModel(IClaimService claims)
+    public DetailsModel(IClaimService claims, IFileStorageService fileStorage)
     {
         _claims = claims;
+        _fileStorage = fileStorage;
     }
 
     public Claim? Claim { get; private set; }
@@ -74,6 +76,33 @@ public sealed class DetailsModel : PageModel
         TempData["Toast.Type"] = "success";
         TempData["Toast.Message"] = "Claim deleted.";
         return RedirectToPage("/Admin/Index");
+    }
+
+    public async Task<IActionResult> OnGetDocumentAsync(
+        int id,
+        int documentId,
+        CancellationToken cancellationToken)
+    {
+        var claim = await _claims.GetClaimDetailsAsync(id, cancellationToken);
+        var document = claim?.Documents.FirstOrDefault(item => item.Id == documentId);
+
+        if (document is null)
+        {
+            return NotFound();
+        }
+
+        var storedFile = await _fileStorage.OpenTicketAsync(document.FilePath, cancellationToken);
+
+        if (storedFile is null)
+        {
+            return NotFound();
+        }
+
+        return new FileStreamResult(storedFile.Content, storedFile.ContentType)
+        {
+            FileDownloadName = document.FileName,
+            EnableRangeProcessing = true
+        };
     }
 
     private void LoadStatusOptions()

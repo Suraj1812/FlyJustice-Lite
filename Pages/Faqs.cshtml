@@ -1,25 +1,52 @@
 @page
+@using System.Text.Json
 @model FlyJusticeLite.Pages.FaqsModel
 @{
-    ViewData["Title"] = "FAQs";
-    ViewData["MetaDescription"] = "Frequently asked questions about EU 261 flight compensation, refunds, rerouting, documents, and claim tracking.";
+    ViewData["Title"] = "Flight Compensation FAQs";
+    ViewData["MetaDescription"] = "Answers about EU 261 compensation, delayed and cancelled flights, missed connections, documents, deadlines, extraordinary circumstances, and claim tracking.";
+    var faqSchema = JsonSerializer.Serialize(new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "FAQPage",
+        ["mainEntity"] = Model.Categories
+            .SelectMany(category => category.Items)
+            .Select(item => new Dictionary<string, object?>
+            {
+                ["@type"] = "Question",
+                ["name"] = item.Question,
+                ["acceptedAnswer"] = new Dictionary<string, object?>
+                {
+                    ["@type"] = "Answer",
+                    ["text"] = item.Answer
+                }
+            })
+            .ToList()
+    });
 }
 
-<section class="container stack-lg">
-    <div class="page-heading split">
-        <div>
-            <p class="eyebrow">FAQs</p>
-            <h1>Clear answers before passengers submit.</h1>
-            <p>Quick guidance on compensation, cancellations, documents, deadlines, and EU 261 route coverage.</p>
-        </div>
-        <a class="button button-primary" asp-page="/Index">Check eligibility</a>
-    </div>
+@section Head {
+    <script type="application/ld+json">@Html.Raw(faqSchema)</script>
+}
 
-    <div class="faq-layout">
+<section class="page-hero">
+    <div class="container page-hero-inner">
+        <p class="eyebrow eyebrow-light">Passenger help centre</p>
+        <h1>Flight compensation questions, answered clearly.</h1>
+        <p>Short, practical guidance on eligibility, compensation amounts, cancellations, refunds, documents, deadlines, route coverage, and claim progress.</p>
+        <div class="page-hero-actions">
+            <a class="button button-light" asp-page="/Index" asp-fragment="eligibility">Check eligibility</a>
+            <a class="button button-ghost-light" asp-page="/Contact">Ask for support</a>
+        </div>
+    </div>
+</section>
+
+<section class="page-shell">
+    <div class="container faq-layout" data-accordion>
         @foreach (var category in Model.Categories)
         {
             <section class="faq-category">
                 <div class="faq-category-heading">
+                    <p class="eyebrow">FAQ category</p>
                     <h2>@category.Name</h2>
                     <p>@category.Description</p>
                 </div>

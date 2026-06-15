@@ -5,10 +5,26 @@ using FlyJusticeLite.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
+builder.Services.AddResponseCompression();
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("public-form", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
+});
 
 builder.Services.Configure<FileUploadOptions>(
     builder.Configuration.GetSection(FileUploadOptions.SectionName));
@@ -37,12 +53,26 @@ app.Use(async (context, next) =>
     context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
     context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
     context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+    context.Response.Headers.TryAdd("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+    context.Response.Headers.TryAdd("X-Permitted-Cross-Domain-Policies", "none");
     await next();
 });
 
 app.UseHttpsRedirection();
+app.UseResponseCompression();
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/uploads/claims"))
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        return;
+    }
+
+    await next();
+});
 app.UseStaticFiles();
 app.UseRouting();
+app.UseRateLimiter();
 app.MapRazorPages();
 app.MapGet("/health", async (ApplicationDbContext dbContext, CancellationToken cancellationToken) =>
 {
@@ -58,6 +88,7 @@ app.MapGet("/robots.txt", (HttpContext context) =>
     var robots = new StringBuilder()
         .AppendLine("User-agent: *")
         .AppendLine("Allow: /")
+        .AppendLine("Disallow: /Admin")
         .Append("Sitemap: ")
         .Append(baseUrl)
         .AppendLine("/sitemap.xml")

@@ -1,13 +1,17 @@
 @page
 @model ErrorModel
 @{
-    ViewData["Title"] = "Something went wrong";
+    ViewData["Title"] = "Something Went Wrong";
 }
 
-<section class="container narrow stack-lg">
-    <div class="page-heading">
-        <p class="eyebrow">Error</p>
-        <h1>Something went wrong.</h1>
-        <p>Please try again. If the issue continues, contact the FlyJustice team with the request details.</p>
+<section class="page-hero">
+    <div class="container page-hero-inner">
+        <p class="eyebrow eyebrow-light">Unexpected turbulence</p>
+        <h1>We could not complete that request.</h1>
+        <p>Try the action again. If the problem continues, use the support page and include the time and page where it happened.</p>
+        <div class="page-hero-actions">
+            <a class="button button-light" asp-page="/Index">Return home</a>
+            <a class="button button-ghost-light" asp-page="/Contact">Contact support</a>
+        </div>
     </div>
 </section>
