@@ -9,11 +9,16 @@ public sealed class IndexModel : PageModel
 {
     private readonly ICompensationCalculator _calculator;
     private readonly IClaimService _claims;
+    private readonly IPublicContentService _content;
 
-    public IndexModel(ICompensationCalculator calculator, IClaimService claims)
+    public IndexModel(
+        ICompensationCalculator calculator,
+        IClaimService claims,
+        IPublicContentService content)
     {
         _calculator = calculator;
         _claims = claims;
+        _content = content;
     }
 
     [BindProperty]
@@ -23,13 +28,23 @@ public sealed class IndexModel : PageModel
 
     public PublicClaimStats Stats { get; private set; } = PublicClaimStats.Empty;
 
+    public IReadOnlyList<ServiceFeature> Services { get; private set; } = [];
+
+    public IReadOnlyList<ProcessStep> ProcessSteps { get; private set; } = [];
+
+    public IReadOnlyList<TrustPoint> TrustPoints { get; private set; } = [];
+
+    public IReadOnlyList<FaqItem> FaqPreview { get; private set; } = [];
+
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
+        LoadContent();
         Stats = await _claims.GetPublicStatsAsync(cancellationToken);
     }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
     {
+        LoadContent();
         Stats = await _claims.GetPublicStatsAsync(cancellationToken);
 
         if (!ModelState.IsValid)
@@ -39,5 +54,16 @@ public sealed class IndexModel : PageModel
 
         Result = _calculator.Calculate(Input.DelayMinutes);
         return Page();
+    }
+
+    private void LoadContent()
+    {
+        Services = _content.GetServiceFeatures().Take(4).ToList();
+        ProcessSteps = _content.GetProcessSteps();
+        TrustPoints = _content.GetTrustPoints();
+        FaqPreview = _content.GetFaqCategories()
+            .SelectMany(category => category.Items)
+            .Take(4)
+            .ToList();
     }
 }

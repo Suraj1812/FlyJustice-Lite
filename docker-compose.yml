@@ -26,8 +26,6 @@ services:
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=FlyJusticeLite;User Id=sa;Password=YourStrong!Passw0rd;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
       Database__ApplyMigrationsOnStartup: "true"
       Database__SeedSampleData: "true"
-      Admin__Username: "admin"
-      Admin__Password: "ChangeMe!12345"
       Site__PublicBaseUrl: "http://localhost:8080"
     ports:
       - "8080:8080"

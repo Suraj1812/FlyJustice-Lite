@@ -1,0 +1,45 @@
+@page
+@model FlyJusticeLite.Pages.WhyChooseUsModel
+@{
+    ViewData["Title"] = "Why Choose Us";
+    ViewData["MetaDescription"] = "Why passengers and claim teams choose FlyJustice Lite for fast, transparent, GDPR-aware flight compensation workflows.";
+}
+
+<section class="container stack-lg">
+    <div class="page-heading centered">
+        <p class="eyebrow">Why choose us</p>
+        <h1>Built for fairness, speed, and clarity.</h1>
+        <p>FlyJustice Lite turns a stressful flight disruption into a structured claim journey with clear next steps and transparent tracking.</p>
+    </div>
+
+    <div class="trust-grid">
+        @foreach (var point in Model.TrustPoints)
+        {
+            <article class="trust-item">
+                <h2>@point.Title</h2>
+                <p>@point.Description</p>
+            </article>
+        }
+    </div>
+
+    <section class="section-band">
+        <div class="article-layout">
+            <article class="article-body">
+                <section class="article-section">
+                    <h2>Passenger-friendly by default</h2>
+                    <p>The claim journey avoids account creation, keeps forms focused, validates inputs clearly, and gives every claim a number that can be tracked anytime.</p>
+                </section>
+                <section class="article-section">
+                    <h2>Review-ready for operators</h2>
+                    <p>The admin area supports search, pagination, document review, status updates, and deletion without turning the product into a bloated dashboard.</p>
+                </section>
+            </article>
+            <aside class="side-panel stack-md">
+                <h2>Start now</h2>
+                <p class="muted">Check eligibility first or submit a claim with ticket evidence.</p>
+                <a class="button button-primary button-wide" asp-page="/Index">Check eligibility</a>
+                <a class="button button-secondary button-wide" asp-page="/Claims/Submit">Submit claim</a>
+            </aside>
+        </div>
+    </section>
+</section>

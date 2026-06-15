@@ -1,0 +1,47 @@
+@page
+@model FlyJusticeLite.Pages.FaqsModel
+@{
+    ViewData["Title"] = "FAQs";
+    ViewData["MetaDescription"] = "Frequently asked questions about EU 261 flight compensation, refunds, rerouting, documents, and claim tracking.";
+}
+
+<section class="container stack-lg">
+    <div class="page-heading split">
+        <div>
+            <p class="eyebrow">FAQs</p>
+            <h1>Clear answers before passengers submit.</h1>
+            <p>Quick guidance on compensation, cancellations, documents, deadlines, and EU 261 route coverage.</p>
+        </div>
+        <a class="button button-primary" asp-page="/Index">Check eligibility</a>
+    </div>
+
+    <div class="faq-layout">
+        @foreach (var category in Model.Categories)
+        {
+            <section class="faq-category">
+                <div class="faq-category-heading">
+                    <h2>@category.Name</h2>
+                    <p>@category.Description</p>
+                </div>
+                <div class="faq-list">
+                    @foreach (var item in category.Items)
+                    {
+                        <details>
+                            <summary>@item.Question</summary>
+                            <p>@item.Answer</p>
+                            @if (item.Bullets is { Count: > 0 })
+                            {
+                                <ul class="check-list">
+                                    @foreach (var bullet in item.Bullets)
+                                    {
+                                        <li>@bullet</li>
+                                    }
+                                </ul>
+                            }
+                        </details>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+</section>

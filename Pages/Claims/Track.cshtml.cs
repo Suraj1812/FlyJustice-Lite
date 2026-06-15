@@ -17,6 +17,7 @@ public sealed class TrackModel : PageModel
 
     [BindProperty(SupportsGet = true)]
     [Required(ErrorMessage = "Enter a claim number.")]
+    [RegularExpression(@"^FJL-\d{8}-\d{4}$", ErrorMessage = "Enter a claim number like FJL-20260615-1001.")]
     [Display(Name = "Claim Number")]
     public string? ClaimNumber { get; set; }
 

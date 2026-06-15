@@ -1,0 +1,86 @@
+@page "/Rights/{slug?}"
+@model FlyJusticeLite.Pages.RightsModel
+@{
+    ViewData["Title"] = Model.PageContent?.Title ?? "Passenger Rights";
+    ViewData["MetaDescription"] = Model.PageContent?.Summary ?? "Learn EU passenger rights for delays, cancellations, missed connections, denied boarding, strikes, weather, and care.";
+}
+
+@if (Model.PageContent is null)
+{
+    <section class="container stack-lg">
+        <div class="page-heading split">
+            <div>
+                <p class="eyebrow">Your rights</p>
+                <h1>Know what airlines owe passengers.</h1>
+                <p>Browse common disruption types and see when compensation, refunds, rerouting, or care may apply.</p>
+            </div>
+            <a class="button button-primary" asp-page="/Claims/Submit">Start your claim</a>
+        </div>
+
+        <div class="content-grid">
+            @foreach (var contentPage in Model.Pages)
+            {
+                <article class="content-card">
+                    <p class="eyebrow">@contentPage.Eyebrow</p>
+                    <h2>@contentPage.Title</h2>
+                    <p>@contentPage.Summary</p>
+                    <a class="text-link" asp-page="/Rights" asp-route-slug="@contentPage.Slug">Read guide</a>
+                </article>
+            }
+        </div>
+    </section>
+}
+else
+{
+    <section class="container stack-lg">
+        <div class="page-heading split">
+            <div>
+                <p class="eyebrow">@Model.PageContent.Eyebrow</p>
+                <h1>@Model.PageContent.Title</h1>
+                <p>@Model.PageContent.Summary</p>
+            </div>
+            <a class="button button-primary" href="@Url.Page(Model.PageContent.CtaPage)">@Model.PageContent.CtaText</a>
+        </div>
+
+        @if (Model.PageContent.Highlights.Count > 0)
+        {
+            <div class="highlight-strip">
+                @foreach (var highlight in Model.PageContent.Highlights)
+                {
+                    <span>@highlight</span>
+                }
+            </div>
+        }
+
+        <div class="article-layout">
+            <article class="article-body">
+                @foreach (var contentBlock in Model.PageContent.Sections)
+                {
+                    <section class="article-section">
+                        <h2>@contentBlock.Heading</h2>
+                        <p>@contentBlock.Body</p>
+                        @if (contentBlock.Bullets is { Count: > 0 })
+                        {
+                            <ul class="check-list">
+                                @foreach (var bullet in contentBlock.Bullets)
+                                {
+                                    <li>@bullet</li>
+                                }
+                            </ul>
+                        }
+                    </section>
+                }
+            </article>
+
+            <aside class="side-panel stack-md">
+                <h2>Related guides</h2>
+                <nav class="side-nav" aria-label="Related passenger rights">
+                    @foreach (var relatedPage in Model.Pages.Where(item => item.Slug != Model.PageContent.Slug).Take(6))
+                    {
+                        <a asp-page="/Rights" asp-route-slug="@relatedPage.Slug">@relatedPage.Title</a>
+                    }
+                </nav>
+            </aside>
+        </div>
+    </section>
+}

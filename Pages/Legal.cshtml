@@ -1,0 +1,42 @@
+@page "/Legal/{slug}"
+@model FlyJusticeLite.Pages.LegalModel
+@{
+    ViewData["Title"] = Model.PageContent?.Title ?? "Legal";
+    ViewData["MetaDescription"] = Model.PageContent?.Summary ?? "FlyJustice Lite legal and compliance information.";
+}
+
+<section class="container stack-lg">
+    @if (Model.PageContent is not null)
+    {
+        <div class="page-heading split">
+            <div>
+                <p class="eyebrow">@Model.PageContent.Eyebrow</p>
+                <h1>@Model.PageContent.Title</h1>
+                <p>@Model.PageContent.Summary</p>
+            </div>
+            <a class="button button-secondary" asp-page="/Contact">Contact</a>
+        </div>
+
+        <div class="article-layout">
+            <article class="article-body">
+                @foreach (var contentBlock in Model.PageContent.Sections)
+                {
+                    <section class="article-section">
+                        <h2>@contentBlock.Heading</h2>
+                        <p>@contentBlock.Body</p>
+                    </section>
+                }
+            </article>
+
+            <aside class="side-panel stack-md">
+                <h2>Compliance</h2>
+                <nav class="side-nav" aria-label="Compliance pages">
+                    @foreach (var legalPage in Model.Pages)
+                    {
+                        <a asp-page="/Legal" asp-route-slug="@legalPage.Slug">@legalPage.Title</a>
+                    }
+                </nav>
+            </aside>
+        </div>
+    }
+</section>

@@ -56,15 +56,14 @@
                 <span>FlyJustice Lite</span>
             </a>
             <div class="nav-links">
+                <a asp-page="/Rights">Rights</a>
+                <a asp-page="/Services">Services</a>
+                <a asp-page="/Fees">Fees</a>
+                <a asp-page="/Faqs">FAQs</a>
+                <a asp-page="/About">About</a>
+                <a asp-page="/WhyChooseUs">Why us</a>
                 <a asp-page="/Claims/Submit">Submit</a>
                 <a asp-page="/Claims/Track">Track</a>
-                <a asp-page="/Admin/Index">Admin</a>
-                @if (User.Identity?.IsAuthenticated == true)
-                {
-                    <form method="post" asp-page="/Admin/Logout" class="nav-form">
-                        <button type="submit" class="nav-button">Sign out</button>
-                    </form>
-                }
             </div>
         </nav>
     </header>
@@ -82,9 +81,42 @@
     }
 
     <footer class="site-footer">
-        <div class="container footer-inner">
-            <span>&copy; @DateTime.UtcNow.Year FlyJustice Lite</span>
-            <span>EU 261 compensation workflows for passenger claims.</span>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a class="brand" asp-page="/Index" aria-label="FlyJustice Lite home">
+                    <img src="~/images/flyjustice-logo.png" alt="" width="40" height="40" />
+                    <span>FlyJustice Lite</span>
+                </a>
+                <p>You fly, we help organize the claim. EU 261 compensation workflows for passenger disruptions.</p>
+            </div>
+            <nav aria-label="Footer services">
+                <h2>Services</h2>
+                <a asp-page="/Claims/Submit">Check Flight Compensation</a>
+                <a asp-page="/Claims/Track">Track Your Claim</a>
+                <a asp-page="/Rights" asp-route-slug="flight-delay">Flight Delays</a>
+                <a asp-page="/Rights" asp-route-slug="flight-cancellation">Flight Cancellations</a>
+                <a asp-page="/Rights" asp-route-slug="missed-connection">Missed Connections</a>
+            </nav>
+            <nav aria-label="Footer links">
+                <h2>Quick links</h2>
+                <a asp-page="/Services">Our Services</a>
+                <a asp-page="/Fees">Fees</a>
+                <a asp-page="/Faqs">FAQs</a>
+                <a asp-page="/About">About</a>
+                <a asp-page="/WhyChooseUs">Why Choose Us</a>
+                <a asp-page="/Contact">Contact</a>
+            </nav>
+            <nav aria-label="Footer compliance">
+                <h2>Compliance</h2>
+                <a asp-page="/Legal" asp-route-slug="terms">Terms</a>
+                <a asp-page="/Legal" asp-route-slug="privacy">Privacy</a>
+                <a asp-page="/Legal" asp-route-slug="gdpr">GDPR</a>
+                <a asp-page="/Legal" asp-route-slug="imprint">Imprint</a>
+            </nav>
+            <div class="footer-bottom">
+                <span>&copy; @DateTime.UtcNow.Year FlyJustice Lite</span>
+                <span>Professional passenger claim intake and tracking.</span>
+            </div>
         </div>
     </footer>
 

@@ -1,0 +1,30 @@
+@page
+@model FlyJusticeLite.Pages.FeesModel
+@{
+    ViewData["Title"] = "Fees";
+    ViewData["MetaDescription"] = "Transparent FlyJustice Lite fee structure for eligibility checks, claim submission, and success-based service fees.";
+}
+
+<section class="container stack-lg">
+    <div class="page-heading centered">
+        <p class="eyebrow">Fees</p>
+        <h1>Transparent from the first check.</h1>
+        <p>Passengers should understand the cost model before submitting a claim or assigning it for review.</p>
+    </div>
+
+    <div class="fee-grid">
+        @foreach (var fee in Model.Fees)
+        {
+            <article class="fee-card">
+                <p class="eyebrow">@fee.Title</p>
+                <h2>@fee.Amount</h2>
+                <p>@fee.Description</p>
+            </article>
+        }
+    </div>
+
+    <section class="notice-panel">
+        <h2>Operational note</h2>
+        <p>Set the exact commercial service fee in your production terms before launch. The app keeps the intake and tracking flow clear while allowing your legal and finance teams to define the final service contract.</p>
+    </section>
+</section>

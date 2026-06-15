@@ -1,0 +1,45 @@
+@page
+@model FlyJusticeLite.Pages.AboutModel
+@{
+    ViewData["Title"] = "About";
+    ViewData["MetaDescription"] = "About FlyJustice Lite, a professional passenger claim intake and tracking application for flight disruption compensation.";
+}
+
+<section class="container stack-lg">
+    <div class="page-heading split">
+        <div>
+            <p class="eyebrow">About</p>
+            <h1>Built for passenger claims without the clutter.</h1>
+            <p>FlyJustice Lite gives passengers a fast way to check eligibility and submit evidence, while giving claim teams a focused review workspace.</p>
+        </div>
+        <a class="button button-primary" asp-page="/Claims/Submit">Open a claim</a>
+    </div>
+
+    <div class="article-layout">
+        <article class="article-body">
+            <section class="article-section">
+                <h2>What FlyJustice Lite does</h2>
+                <p>The app helps passengers estimate compensation, submit flight and ticket details, and track the status of a claim by claim number. Operators can search, review, update, and delete claims from the internal admin area.</p>
+            </section>
+            <section class="article-section">
+                <h2>Designed for practical EU 261 workflows</h2>
+                <p>The experience focuses on the common operational questions around delayed flights, cancellations, missed connections, denied boarding, care rights, and extraordinary circumstances.</p>
+            </section>
+            <section class="article-section">
+                <h2>Production-minded foundations</h2>
+                <p>Server-side validation, Entity Framework Core, SQL Server, file upload validation, repository/service boundaries, and health checks make the system easier to operate and extend.</p>
+            </section>
+        </article>
+
+        <aside class="side-panel stack-md">
+            <h2>Trust signals</h2>
+            @foreach (var point in Model.TrustPoints)
+            {
+                <div class="mini-item">
+                    <strong>@point.Title</strong>
+                    <p>@point.Description</p>
+                </div>
+            }
+        </aside>
+    </div>
+</section>
