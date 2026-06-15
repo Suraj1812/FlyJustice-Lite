@@ -10,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AddPageRoute("/Admin/Index", "/Admin");
     options.Conventions.AuthorizeFolder("/Admin");
     options.Conventions.AllowAnonymousToPage("/Admin/Login");
 });
@@ -60,6 +59,14 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
+app.MapGet("/health", async (ApplicationDbContext dbContext, CancellationToken cancellationToken) =>
+{
+    var canConnect = await dbContext.Database.CanConnectAsync(cancellationToken);
+
+    return canConnect
+        ? Results.Ok(new { status = "ok", database = "connected" })
+        : Results.Problem("Database connection failed.", statusCode: StatusCodes.Status503ServiceUnavailable);
+});
 
 await ApplyDatabaseSetupAsync(app);
 

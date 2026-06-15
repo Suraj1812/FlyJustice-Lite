@@ -10,6 +10,15 @@ FlyJustice Lite is an ASP.NET Core 8 Razor Pages app for checking EU flight dela
 - Repository and service pattern
 - Mobile-first CSS with Inter typography
 
+## Live Deployment
+
+- App: https://flyjustice-web-production.up.railway.app
+- Health check: https://flyjustice-web-production.up.railway.app/health
+- Host: Railway
+- Database: private Railway SQL Server service (`flyjustice-mssql.railway.internal`)
+
+The live Railway deployment has been validated for eligibility checks, claim submission with ticket upload, claim tracking, admin login, admin search/detail view, status updates, and claim deletion.
+
 ## Run Locally
 
 1. Update `ConnectionStrings:DefaultConnection` in `appsettings.json` or use user secrets.
@@ -44,6 +53,7 @@ The containerized app runs at `http://localhost:8080`.
 - `/Claims/Submit` - submit a claim
 - `/Claims/Track` - track a claim by claim number
 - `/Admin` - admin claims list
+- `/health` - app and database health check
 
 ## Development Admin Login
 
@@ -66,6 +76,8 @@ Site__PublicBaseUrl
 Database__ApplyMigrationsOnStartup=true
 Database__SeedSampleData=false
 ```
+
+For Railway, the web service deploys from the root `Dockerfile`. The SQL Server sidecar runs the official Microsoft SQL Server 2022 image and uses `MSSQL_MEMORY_LIMIT_MB=1536` so the container remains stable on Railway. For long-term production data durability, attach a persistent Railway volume through the Railway dashboard or move the connection string to managed Azure SQL; Railway CLI volume attachment failed during validation.
 
 ## Sample Claim Numbers
 
